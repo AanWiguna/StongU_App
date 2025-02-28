@@ -1,4 +1,4 @@
-name: strongu
+name: strong_u
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -52,11 +52,27 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
 
+
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
-
+  assets:
+    - picture/opening.png
+    - picture/titik_opening.png
+    - picture/Zipcode.png
+    - picture/titik_zipcode.png
+    - picture/titik_birthday.png
+    - picture/birthday.png
+    - picture/SessionStart.png
+    - picture/titik_SessionStart.png
+    - picture/SessionDay.png
+    - picture/titik_SessionDay.png
+    - picture/Goal.png
+    - picture/titik_Goal.png
+    - picture/Welcome.png
+    - picture/Login.png
+    - picture/SignUp.png
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
@@ -73,6 +89,18 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
+  fonts:
+    - family: futura
+      fonts:
+        - asset: font/futur.ttf
+    
+    - family: futura bold
+      fonts:
+        - asset: font/futura_bold.ttf
+
+    - family: montserrat
+      fonts:
+        - asset: font/montserrat_bold.ttf
   # fonts:
   #   - family: Schyler
   #     fonts:
