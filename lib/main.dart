@@ -129,10 +129,14 @@ class OpeningPage extends StatelessWidget {
 }
 
 class Zipcode extends StatelessWidget {
+  //menambah fitur input teks
+  final TextEditingController _zipcodeController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: true,
       body: Stack(
         children: [
           //gambar background
@@ -187,7 +191,40 @@ class Zipcode extends StatelessWidget {
               ),
             ),
           ),
-
+          // Tombol Back
+          Positioned(
+            top: 40,
+            left: 20,
+            child: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white, size: 30),
+              onPressed: () {
+                Navigator.pop(context); // Kembali ke halaman sebelumnya
+              },
+            ),
+          ),
+          // Input ZIP Code
+          Align(
+            alignment: Alignment.center,
+            child: Container(
+              margin: EdgeInsets.only(top: 250),
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              width: MediaQuery.of(context).size.width * 0.8,
+              decoration: BoxDecoration(
+                color: Color(0xFF50BDF5),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: TextField(
+                controller: _zipcodeController,
+                keyboardType: TextInputType.number,
+                style: TextStyle(color: Colors.white, fontFamily: "futura"),
+                decoration: InputDecoration(
+                  hintText: "Enter ZIP code",
+                  hintStyle: TextStyle(color: Colors.white),
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
+          ),
           //tombol next
           Align(
             alignment: Alignment.center,
@@ -197,10 +234,25 @@ class Zipcode extends StatelessWidget {
               //arah transisi tombol
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Birthday()),
-                  );
+                  String zipCode = _zipcodeController.text.trim();
+                  if (zipCode.isEmpty) {
+                    // Jika input kosong, tampilkan SnackBar
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          "Please enter a ZIP code!",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  } else {
+                    // Jika sudah terisi, navigasi ke halaman berikutnya
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Birthday()),
+                    );
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF0392FB),
@@ -222,38 +274,56 @@ class Zipcode extends StatelessWidget {
   }
 }
 
-class Birthday extends StatelessWidget {
+//stateful widget supaya bisa berubah
+class Birthday extends StatefulWidget {
+  @override
+  _BirthdayState createState() => _BirthdayState();
+}
+
+//state class hari, bulan, tahun (null)
+class _BirthdayState extends State<Birthday> {
+  //variabel
+  String? selectedDate;
+  String? selectedMonth;
+  String? selectedYear;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          //gambar background
-          //posisi gambar
+          // Gambar background
           Positioned(
             left: 0,
             top: 0,
             child: Image.asset("picture/birthday.png"),
           ),
-          //titik-titik
+          // Tombol Back (pojok kiri atas)
+          Positioned(
+            top: 40,
+            left: 20,
+            child: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white, size: 30),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
+          // Titik-titik
           Align(
             alignment: Alignment.center,
-            //posisi Y
             child: Container(
               margin: EdgeInsets.only(top: 600),
               child: Image.asset("picture/titik_birthday.png"),
             ),
           ),
-          //judul
-          //posisi judul
+          // Judul
           Positioned(
             left: 10,
             top: 475,
-            //border biar ga lewat tulisannya
             child: SizedBox(
               width: MediaQuery.of(context).size.width - 20,
-              //tulisan multi warna
               child: Text.rich(
                 TextSpan(
                   text: "Choose Your ",
@@ -263,7 +333,6 @@ class Birthday extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     fontFamily: "Futura",
                   ),
-                  //tulisan berubah warna
                   children: [
                     TextSpan(
                       text: "Birthday",
@@ -271,30 +340,83 @@ class Birthday extends StatelessWidget {
                         color: Color(0xFF0392FB),
                       ),
                     ),
-                    TextSpan(
-                      text: "!",
-                    ),
+                    TextSpan(text: "!"),
                   ],
                 ),
-                //tulisan rata tengah
                 textAlign: TextAlign.center,
               ),
             ),
           ),
-
-          //tombol next
+          // Tombol Tanggal, Bulan, Tahun
+          Positioned(
+            top: 530,
+            left: 20,
+            right: 20,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              //opsi
+              children: [
+                _buildOptionButton("Date", selectedDate, () {
+                  _showSelectionModal(context, "Select Date",
+                      List.generate(31, (i) => "${i + 1}"), (val) {
+                    setState(() {
+                      selectedDate = val;
+                    });
+                  });
+                }),
+                _buildOptionButton("Month", selectedMonth, () {
+                  _showSelectionModal(context, "Select Month", [
+                    "January",
+                    "February",
+                    "March",
+                    "April",
+                    "May",
+                    "June",
+                    "July",
+                    "August",
+                    "September",
+                    "October",
+                    "November",
+                    "December"
+                  ], (val) {
+                    setState(() {
+                      selectedMonth = val;
+                    });
+                  });
+                }),
+                _buildOptionButton("Year", selectedYear, () {
+                  _showSelectionModal(context, "Select Year",
+                      List.generate(126, (i) => "${2025 - i}"), (val) {
+                    setState(() {
+                      selectedYear = val;
+                    });
+                  });
+                }),
+              ],
+            ),
+          ),
+          // Tombol Next
           Align(
             alignment: Alignment.center,
-            //posisi Y
             child: Container(
               margin: EdgeInsets.only(top: 700),
-              //arah transisi tombol
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SesssionStart()),
-                  );
+                  if (selectedDate != null &&
+                      selectedMonth != null &&
+                      selectedYear != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SesssionStart()),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("Please select your birthday!"),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF0392FB),
@@ -305,49 +427,133 @@ class Birthday extends StatelessWidget {
                 child: Text(
                   "          Next!          ",
                   style: TextStyle(
-                      fontSize: 24, color: Colors.white, fontFamily: "futura"),
+                      fontSize: 24, color: Colors.white, fontFamily: "Futura"),
                 ),
               ),
             ),
-          )
+          ),
         ],
       ),
     );
   }
+
+//atur widget input hari, bulan, tahun
+  Widget _buildOptionButton(
+      String label, String? selectedValue, VoidCallback onPressed) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Color(0xFF50BDF5),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+      child: Text(
+        selectedValue ?? label,
+        style: TextStyle(
+            fontSize: 18,
+            color: const Color.fromARGB(255, 255, 255, 255),
+            fontFamily: "futura"),
+      ),
+    );
+  }
+
+//menampilkan opsi
+  void _showSelectionModal(BuildContext context, String title,
+      List<String> options, Function(String) onSelect) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          height: 300,
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.all(16),
+                child: Text(title,
+                    style:
+                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: options.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(options[index], textAlign: TextAlign.center),
+                      onTap: () {
+                        onSelect(options[index]);
+                        Navigator.pop(context);
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 }
 
-class SesssionStart extends StatelessWidget {
+class SesssionStart extends StatefulWidget {
+  @override
+  _SesssionStartState createState() => _SesssionStartState();
+}
+
+class _SesssionStartState extends State<SesssionStart> {
+  // Menyimpan status pemilihan tombol
+  Map<String, bool> selectedSessions = {
+    "Morning": false,
+    "Noon": false,
+    "Night": false,
+  };
+
+  bool isNextEnabled = false; // Tambahkan state untuk tombol Next
+
+  void _updateNextButtonState() {
+    setState(() {
+      isNextEnabled = selectedSessions.values.any((value) => value);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          //gambar background
-          //posisi gambar
+          // Gambar background
           Positioned(
             left: 0,
             top: 0,
             child: Image.asset("picture/SessionStart.png"),
           ),
-          //titik-titik
+          // Tombol Back
+          Positioned(
+            top: 40,
+            left: 20,
+            child: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white, size: 30),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
+          // Titik-titik
           Align(
             alignment: Alignment.center,
-            //posisi Y
             child: Container(
-              margin: EdgeInsets.only(top: 600),
+              margin: EdgeInsets.only(top: 690),
               child: Image.asset("picture/titik_SessionStart.png"),
             ),
           ),
-          //judul
-          //posisi judul
+          // Judul
           Positioned(
             left: 10,
             top: 475,
-            //border biar ga lewat tulisannya
             child: SizedBox(
               width: MediaQuery.of(context).size.width - 20,
-              //tulisan multi warna
               child: Text.rich(
                 TextSpan(
                   text: "Choose Your ",
@@ -357,41 +563,61 @@ class SesssionStart extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     fontFamily: "Futura",
                   ),
-                  //tulisan berubah warna
                   children: [
                     TextSpan(
                       text: "Session",
-                      style: TextStyle(
-                        color: Color(0xFF0392FB),
-                      ),
+                      style: TextStyle(color: Color(0xFF0392FB)),
                     ),
-                    TextSpan(
-                      text: "!",
-                    ),
+                    TextSpan(text: "!"),
                   ],
                 ),
-                //tulisan rata tengah
                 textAlign: TextAlign.center,
               ),
             ),
           ),
-
-          //tombol next
+          // Tombol sesi (multi-select)
           Align(
-            alignment: Alignment.center,
-            //posisi Y
+            alignment: Alignment(0.0, 0.45),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildSessionButton("Morning", "06.00 - 12.00"),
+                _buildSessionButton("Noon", "12.00 - 18.00"),
+                _buildSessionButton("Night", "18.00 - 22.00"),
+              ],
+            ),
+          ),
+          // Tombol Next
+          Align(
+            alignment: Alignment.bottomCenter,
             child: Container(
-              margin: EdgeInsets.only(top: 700),
-              //arah transisi tombol
+              margin: EdgeInsets.only(bottom: 50),
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SesssionDay()),
-                  );
+                  if (isNextEnabled) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SesssionDay()),
+                    );
+                  } else {
+                    // Tampilkan notifikasi kalau tidak ada yang dipilih
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          "Please select at least one session!",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        backgroundColor: Colors.red,
+                        behavior: SnackBarBehavior.floating,
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  }
                 },
+                //setting belum pilih
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF0392FB),
+                  backgroundColor:
+                      isNextEnabled ? Color(0xFF0392FB) : Colors.grey,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
@@ -399,49 +625,128 @@ class SesssionStart extends StatelessWidget {
                 child: Text(
                   "          Next!          ",
                   style: TextStyle(
-                      fontSize: 24, color: Colors.white, fontFamily: "futura"),
+                    fontSize: 24,
+                    color: Colors.white,
+                    fontFamily: "Futura",
+                  ),
                 ),
               ),
             ),
-          )
+          ),
         ],
+      ),
+    );
+  }
+
+  // Function untuk membangun tombol sesi
+  Widget _buildSessionButton(String session, String time) {
+    bool isSelected = selectedSessions[session] ?? false;
+
+    return Container(
+      margin: EdgeInsets.only(top: 10),
+      width: 250,
+      child: ElevatedButton(
+        onPressed: () {
+          setState(() {
+            selectedSessions[session] = !isSelected;
+          });
+          _updateNextButtonState(); // Update status tombol Next
+        },
+        // Ubah warna tombol sesuai statusnya
+        style: ElevatedButton.styleFrom(
+          backgroundColor: isSelected ? Color(0xFF0392FB) : Colors.white,
+          side: BorderSide(color: Color(0xFF0392FB), width: 2),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        // Ubah warna teks sesuai statusnya
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              session,
+              style: TextStyle(
+                fontSize: 18,
+                color: isSelected ? Colors.white : Color(0xFF0392FB),
+                fontFamily: "futura",
+              ),
+            ),
+            SizedBox(),
+            Text(
+              time,
+              style: TextStyle(
+                fontSize: 14,
+                color: isSelected ? Colors.white : Color(0xFF0392FB),
+                fontFamily: "montserrat",
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-class SesssionDay extends StatelessWidget {
+class SesssionDay extends StatefulWidget {
+  @override
+  _SesssionDayState createState() => _SesssionDayState();
+}
+
+class _SesssionDayState extends State<SesssionDay> {
+  // Menyimpan status pemilihan tombol
+  Map<String, bool> selectedDays = {
+    "Monday": false,
+    "Tuesday": false,
+    "Wednesday": false,
+    "Thursday": false,
+    "Friday": false,
+    "Saturday": false,
+    "Sunday": false,
+  };
+
+  bool isNextEnabled = false; // Tambahkan state untuk tombol Next
+
+  void _updateNextButtonState() {
+    setState(() {
+      isNextEnabled = selectedDays.values.any((value) => value);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          //gambar background
-          //posisi gambar
+          // Gambar background
           Positioned(
             left: 0,
             top: 0,
             child: Image.asset("picture/SessionDay.png"),
           ),
-          //titik-titik
+          Positioned(
+            top: 40,
+            left: 20,
+            child: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white, size: 30),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
           Align(
             alignment: Alignment.center,
-            //posisi Y
             child: Container(
-              margin: EdgeInsets.only(top: 600),
+              margin: EdgeInsets.only(top: 690),
               child: Image.asset("picture/titik_SessionDay.png"),
             ),
           ),
-          //judul
-          //posisi judul
           Positioned(
             left: 10,
             top: 475,
-            //border biar ga lewat tulisannya
             child: SizedBox(
               width: MediaQuery.of(context).size.width - 20,
-              //tulisan multi warna
               child: Text.rich(
                 TextSpan(
                   text: "Choose Your ",
@@ -451,41 +756,79 @@ class SesssionDay extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     fontFamily: "Futura",
                   ),
-                  //tulisan berubah warna
                   children: [
                     TextSpan(
                       text: "Session Day",
-                      style: TextStyle(
-                        color: Color(0xFF0392FB),
-                      ),
+                      style: TextStyle(color: Color(0xFF0392FB)),
                     ),
-                    TextSpan(
-                      text: "!",
-                    ),
+                    TextSpan(text: "!"),
                   ],
                 ),
-                //tulisan rata tengah
                 textAlign: TextAlign.center,
               ),
             ),
           ),
-
-          //tombol next
           Align(
-            alignment: Alignment.center,
-            //posisi Y
+            alignment: Alignment(0.0, 0.62),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildDayButton("Monday"),
+                    SizedBox(width: 10),
+                    _buildDayButton("Tuesday"),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildDayButton("Wednesday"),
+                    SizedBox(width: 10),
+                    _buildDayButton("Thursday"),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildDayButton("Friday"),
+                    SizedBox(width: 10),
+                    _buildDayButton("Saturday"),
+                  ],
+                ),
+                _buildDayButton("Sunday"),
+              ],
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
             child: Container(
-              margin: EdgeInsets.only(top: 700),
-              //arah transisi tombol
+              margin: EdgeInsets.only(bottom: 50),
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Goal()),
-                  );
+                  if (isNextEnabled) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Goal()),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          "Please select at least one day!",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        backgroundColor: Colors.red,
+                        behavior: SnackBarBehavior.floating,
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF0392FB),
+                  backgroundColor:
+                      isNextEnabled ? Color(0xFF0392FB) : Colors.grey,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
@@ -493,105 +836,178 @@ class SesssionDay extends StatelessWidget {
                 child: Text(
                   "          Next!          ",
                   style: TextStyle(
-                      fontSize: 24, color: Colors.white, fontFamily: "futura"),
+                    fontSize: 24,
+                    color: Colors.white,
+                    fontFamily: "Futura",
+                  ),
                 ),
               ),
             ),
-          )
+          ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildDayButton(String day) {
+    bool isSelected = selectedDays[day] ?? false;
+
+    return Container(
+      margin: EdgeInsets.only(top: 10),
+      width: 160,
+      child: ElevatedButton(
+        onPressed: () {
+          setState(() {
+            selectedDays[day] = !isSelected;
+          });
+          _updateNextButtonState();
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: isSelected ? Color(0xFF0392FB) : Colors.white,
+          side: BorderSide(color: Color(0xFF0392FB), width: 2),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        child: Text(
+          day,
+          style: TextStyle(
+            fontSize: 18,
+            color: isSelected ? Colors.white : Color(0xFF0392FB),
+            fontFamily: "futura",
+          ),
+        ),
       ),
     );
   }
 }
 
-class Goal extends StatelessWidget {
+class Goal extends StatefulWidget {
+  @override
+  _GoalState createState() => _GoalState();
+}
+
+class _GoalState extends State<Goal> {
+  Map<String, bool> selectedGoals = {
+    "Weight Loss": false,
+    "Weight Gain": false,
+    "Firming & Toning": false,
+    "Flexibility": false,
+    "Increase Muscle Strength": false,
+    "Aerobic Fitness": false,
+    "Endurance Training": false,
+    "Body Building": false,
+  };
+
+  bool get isBeginEnabled => selectedGoals.containsValue(true);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          //gambar background
-          //posisi gambar
+          Positioned(left: 0, top: 0, child: Image.asset("picture/Goal.png")),
           Positioned(
-            left: 0,
-            top: 0,
-            child: Image.asset("picture/Goal.png"),
+            top: 40,
+            left: 20,
+            child: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white, size: 30),
+              onPressed: () => Navigator.pop(context),
+            ),
           ),
-          //titik-titik
           Align(
             alignment: Alignment.center,
-            //posisi Y
             child: Container(
-              margin: EdgeInsets.only(top: 600),
+              margin: EdgeInsets.only(top: 690),
               child: Image.asset("picture/titik_Goal.png"),
             ),
           ),
-          //judul
-          //posisi judul
           Positioned(
             left: 10,
             top: 475,
-            //border biar ga lewat tulisannya
             child: SizedBox(
               width: MediaQuery.of(context).size.width - 20,
-              //tulisan multi warna
               child: Text.rich(
                 TextSpan(
                   text: "Set Your ",
                   style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: "Futura",
-                  ),
-                  //tulisan berubah warna
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: "Futura"),
                   children: [
                     TextSpan(
-                      text: "Goals",
-                      style: TextStyle(
-                        color: Color(0xFF0392FB),
-                      ),
-                    ),
-                    TextSpan(
-                      text: "!",
-                    ),
+                        text: "Goals",
+                        style: TextStyle(color: Color(0xFF0392FB))),
+                    TextSpan(text: "!"),
                   ],
                 ),
-                //tulisan rata tengah
                 textAlign: TextAlign.center,
               ),
             ),
           ),
-
-          //tombol next
-          Align(
-            alignment: Alignment.center,
-            //posisi Y
-            child: Container(
-              margin: EdgeInsets.only(top: 700),
-              //arah transisi tombol
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Welcome()),
+          Positioned(
+            top: 520,
+            left: 0,
+            right: 0,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 10, // Jarak antar tombol dalam satu baris
+                runSpacing: 10, // Jarak antar baris tombol
+                children: selectedGoals.keys.map((goal) {
+                  return SizedBox(
+                    width: (MediaQuery.of(context).size.width / 2) -
+                        25, // Lebar tiap tombol
+                    child: ElevatedButton(
+                      onPressed: () {
+                        setState(
+                            () => selectedGoals[goal] = !selectedGoals[goal]!);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            selectedGoals[goal]! ? Colors.blue : Colors.white,
+                        side: BorderSide(color: Colors.blue, width: 2),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                      ),
+                      child: Text(goal,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 17,
+                              color: selectedGoals[goal]!
+                                  ? Colors.white
+                                  : Colors.blue)),
+                    ),
                   );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF0392FB),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-                child: Text(
-                  "          Begin!          ",
-                  style: TextStyle(
-                      fontSize: 24, color: Colors.white, fontFamily: "futura"),
-                ),
+                }).toList(),
               ),
             ),
-          )
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: Container(
+              margin: EdgeInsets.only(top: 770),
+              child: ElevatedButton(
+                onPressed: isBeginEnabled
+                    ? () => Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Welcome()))
+                    : null,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor:
+                      isBeginEnabled ? Color(0xFF0392FB) : Colors.grey,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                ),
+                child: Text("          Begin!          ",
+                    style: TextStyle(
+                        fontSize: 24,
+                        color: Colors.white,
+                        fontFamily: "Futura")),
+              ),
+            ),
+          ),
         ],
       ),
     );
