@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:strong_u/page_indicator.dart';
 import 'package:strong_u/sessionStart.dart';
 
 //stateful widget supaya bisa berubah
 class Birthday extends StatefulWidget {
+  const Birthday({super.key});
+
   @override
   _BirthdayState createState() => _BirthdayState();
 }
@@ -20,11 +23,37 @@ class _BirthdayState extends State<Birthday> {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          // Gambar background
-          Positioned(
-            left: 0,
-            top: 0,
-            child: Image.asset("picture/birthday.png"),
+          // Gradient Background
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Color(0xFF0392FB), Color(0xFF025795)],
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.72,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(200),
+                  topRight: Radius.circular(200),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 10,
+                    spreadRadius: 2,
+                    offset: const Offset(0, -3),
+                  ),
+                ],
+              ),
+            ),
           ),
           // Tombol Back (pojok kiri atas)
           Align(
@@ -39,14 +68,7 @@ class _BirthdayState extends State<Birthday> {
               ),
             ),
           ),
-          // Titik-titik
-          Align(
-            alignment: Alignment.center,
-            child: Padding(
-              padding: EdgeInsets.only(top: 600),
-              child: Image.asset("picture/titik_birthday.png"),
-            ),
-          ),
+
           // Judul
           Align(
             alignment: Alignment.topCenter,
@@ -126,11 +148,29 @@ class _BirthdayState extends State<Birthday> {
               ),
             ),
           ),
+          Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 130),
+              child: Image.asset(
+                "picture/Birthday.png",
+                width: 350,
+                height: 350,
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 110),
+              child: PageIndicator(currentIndex: 2, totalPages: 7),
+            ),
+          ),
           // Tombol Next
           Align(
-            alignment: Alignment.center,
+            alignment: Alignment.bottomCenter,
             child: Padding(
-              padding: EdgeInsets.only(top: 700),
+              padding: const EdgeInsets.only(bottom: 50),
               child: ElevatedButton(
                 onPressed: () {
                   if (selectedDate != null &&
@@ -142,7 +182,7 @@ class _BirthdayState extends State<Birthday> {
                     );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
+                      const SnackBar(
                         content: Text("Please enter your birthday!"),
                         backgroundColor: Colors.red,
                       ),
@@ -150,15 +190,21 @@ class _BirthdayState extends State<Birthday> {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF0392FB),
+                  backgroundColor: const Color(0xFF0392FB),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(50),
                   ),
                 ),
-                child: Text(
-                  "          Next!          ",
-                  style: TextStyle(
-                      fontSize: 24, color: Colors.white, fontFamily: "Futura"),
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                  child: Text(
+                    "Next!",
+                    style: TextStyle(
+                      fontSize: 24,
+                      color: Colors.white,
+                      fontFamily: "Futura",
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -195,7 +241,7 @@ class _BirthdayState extends State<Birthday> {
     showModalBottomSheet(
       context: context,
       builder: (context) {
-        return Container(
+        return SizedBox(
           height: 300,
           child: Column(
             children: [

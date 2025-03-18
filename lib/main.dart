@@ -6,6 +6,8 @@ void main() {
 }
 
 class StrongU extends StatelessWidget {
+  const StrongU({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

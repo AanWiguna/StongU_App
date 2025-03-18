@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:strong_u/login.dart';
+import 'package:strong_u/page_indicator.dart';
 
 class Goal extends StatefulWidget {
+  const Goal({super.key});
+
   @override
   _GoalState createState() => _GoalState();
 }
@@ -26,24 +29,69 @@ class _GoalState extends State<Goal> {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          Positioned(left: 0, top: 0, child: Image.asset("picture/Goal.png")),
+          // Gradient Background
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Color(0xFF0392FB), Color(0xFF025795)],
+              ),
+            ),
+          ),
           Align(
             alignment: Alignment.topLeft,
             child: Padding(
               padding: const EdgeInsets.only(top: 40, left: 20),
               child: IconButton(
                 icon: Icon(Icons.arrow_back, color: Colors.white, size: 30),
-                onPressed: () => Navigator.pop(context),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
               ),
             ),
           ),
           Align(
-            alignment: Alignment.center,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 690),
-              child: Image.asset("picture/titik_Goal.png"),
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.72,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(200),
+                  topRight: Radius.circular(200),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 10,
+                    spreadRadius: 2,
+                    offset: const Offset(0, -3),
+                  ),
+                ],
+              ),
             ),
           ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 110),
+              child: PageIndicator(currentIndex: 6, totalPages: 7),
+            ),
+          ),
+          Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 130),
+              child: Image.asset(
+                "picture/Goal.png",
+                width: 350,
+                height: 350,
+              ),
+            ),
+          ),
+
           Align(
             alignment: Alignment.topCenter,
             child: Padding(

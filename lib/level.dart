@@ -1,27 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:strong_u/page_indicator.dart';
-import 'package:strong_u/sessionDay.dart';
+import 'package:strong_u/goal.dart';
 
-class SesssionStart extends StatefulWidget {
-  const SesssionStart({super.key});
+class LevelSelection extends StatefulWidget {
+  const LevelSelection({super.key});
 
   @override
-  _SesssionStartState createState() => _SesssionStartState();
+  _LevelSelectionState createState() => _LevelSelectionState();
 }
 
-class _SesssionStartState extends State<SesssionStart> {
-  // Menyimpan status pemilihan tombol
-  Map<String, bool> selectedSessions = {
-    "Morning": false,
-    "Noon": false,
-    "Night": false,
+class _LevelSelectionState extends State<LevelSelection> {
+  // Menyimpan status pemilihan level
+  Map<String, bool> selectedLevels = {
+    "Beginner": false,
+    "Intermediate": false,
+    "Expert": false,
   };
 
-  bool isNextEnabled = false;
+  bool isNextEnabled =
+      false; // Tombol Next diaktifkan jika ada level yang dipilih
 
   void _updateNextButtonState() {
     setState(() {
-      isNextEnabled = selectedSessions.values.any((value) => value);
+      isNextEnabled = selectedLevels.values.any((value) => value);
     });
   }
 
@@ -46,7 +47,8 @@ class _SesssionStartState extends State<SesssionStart> {
             child: Padding(
               padding: const EdgeInsets.only(top: 40, left: 20),
               child: IconButton(
-                icon: Icon(Icons.arrow_back, color: Colors.white, size: 30),
+                icon:
+                    const Icon(Icons.arrow_back, color: Colors.white, size: 30),
                 onPressed: () {
                   Navigator.pop(context);
                 },
@@ -86,15 +88,15 @@ class _SesssionStartState extends State<SesssionStart> {
                 child: Text.rich(
                   TextSpan(
                     text: "Choose Your ",
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.black,
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
                       fontFamily: "Futura",
                     ),
-                    children: [
+                    children: const [
                       TextSpan(
-                        text: "Session",
+                        text: "Level",
                         style: TextStyle(color: Color(0xFF0392FB)),
                       ),
                       TextSpan(text: "!"),
@@ -105,24 +107,24 @@ class _SesssionStartState extends State<SesssionStart> {
               ),
             ),
           ),
-          // Tombol sesi (multi-select)
+          // Tombol level (multi-select)
           Align(
-            alignment: Alignment(0.0, 0.45),
+            alignment: const Alignment(0.0, 0.45),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                _buildSessionButton("Morning", "06.00 - 12.00"),
-                _buildSessionButton("Noon", "12.00 - 18.00"),
-                _buildSessionButton("Night", "18.00 - 22.00"),
+                _buildLevelButton("Beginner", "0-1 Year Experience"),
+                _buildLevelButton("Intermediate", "1-3 Years Experience"),
+                _buildLevelButton("Expert", "3+ Years Experience"),
               ],
             ),
           ),
           // Indikator Halaman
           Align(
             alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 110),
-              child: PageIndicator(currentIndex: 3, totalPages: 7),
+            child: const Padding(
+              padding: EdgeInsets.only(bottom: 110),
+              child: PageIndicator(currentIndex: 5, totalPages: 7),
             ),
           ),
           Align(
@@ -130,7 +132,7 @@ class _SesssionStartState extends State<SesssionStart> {
             child: Padding(
               padding: const EdgeInsets.only(top: 130),
               child: Image.asset(
-                "picture/SessionStart.png",
+                "picture/LevelSelection.png",
                 width: 350,
                 height: 350,
               ),
@@ -146,13 +148,13 @@ class _SesssionStartState extends State<SesssionStart> {
                   if (isNextEnabled) {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => SesssionDay()),
+                      MaterialPageRoute(builder: (context) => Goal()),
                     );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text(
-                          "Please select at least one session!",
+                          "Please select at least one level!",
                           style: TextStyle(fontSize: 16),
                         ),
                         backgroundColor: Colors.red,
@@ -188,9 +190,9 @@ class _SesssionStartState extends State<SesssionStart> {
     );
   }
 
-  // Function untuk membangun tombol sesi
-  Widget _buildSessionButton(String session, String time) {
-    bool isSelected = selectedSessions[session] ?? false;
+  // Function untuk membangun tombol level
+  Widget _buildLevelButton(String level, String experience) {
+    bool isSelected = selectedLevels[level] ?? false;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
@@ -199,13 +201,14 @@ class _SesssionStartState extends State<SesssionStart> {
         child: ElevatedButton(
           onPressed: () {
             setState(() {
-              selectedSessions[session] = !isSelected;
+              selectedLevels[level] = !isSelected;
             });
             _updateNextButtonState();
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: isSelected ? Color(0xFF0392FB) : Colors.white,
-            side: BorderSide(color: Color(0xFF0392FB), width: 2),
+            backgroundColor:
+                isSelected ? const Color(0xFF0392FB) : Colors.white,
+            side: const BorderSide(color: Color(0xFF0392FB), width: 2),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
@@ -214,20 +217,19 @@ class _SesssionStartState extends State<SesssionStart> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                session,
+                level,
                 style: TextStyle(
                   fontSize: 18,
-                  color: isSelected ? Colors.white : Color(0xFF0392FB),
-                  fontFamily: "futura",
+                  color: isSelected ? Colors.white : const Color(0xFF0392FB),
+                  fontFamily: "Futura",
                 ),
               ),
-              SizedBox(),
               Text(
-                time,
+                experience,
                 style: TextStyle(
                   fontSize: 14,
-                  color: isSelected ? Colors.white : Color(0xFF0392FB),
-                  fontFamily: "montserrat",
+                  color: isSelected ? Colors.white : const Color(0xFF0392FB),
+                  fontFamily: "Montserrat",
                 ),
               ),
             ],

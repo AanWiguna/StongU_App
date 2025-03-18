@@ -28,6 +28,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  smooth_page_indicator: ^1.0.0
   flutter:
     sdk: flutter
   shared_preferences: 2.5.2
@@ -60,21 +61,14 @@ flutter:
   uses-material-design: true
   assets:
     - picture/opening.png
-    - picture/titik_opening.png
-    - picture/Zipcode.png
-    - picture/titik_zipcode.png
-    - picture/titik_birthday.png
-    - picture/birthday.png
-    - picture/SessionStart.png
-    - picture/titik_SessionStart.png
-    - picture/SessionDay.png
-    - picture/titik_SessionDay.png
-    - picture/Goal.png
-    - picture/titik_Goal.png
-    - picture/Welcome.png
-    - picture/Login.png
-    - picture/SignUp.png
     - picture/Logo.png
+    - picture/Zipcode.png
+    - picture/Birthday.png
+    - picture/SessionStart.png
+    - picture/SessionDay.png
+    - picture/Goal.png
+    - picture/LevelSelection.png
+
 
   # To add assets to your application, add an assets section, like this:
   # assets:

@@ -1,242 +1,207 @@
 import 'package:flutter/material.dart';
-import 'package:strong_u/login.dart';
 import 'package:strong_u/opening.dart';
 
-class SignUp extends StatelessWidget {
-  final TextEditingController _UsernameController = TextEditingController();
-  final TextEditingController _EmailController = TextEditingController();
-  final TextEditingController _PhoneController = TextEditingController();
-  final TextEditingController _PasswordController = TextEditingController();
+class SignUp extends StatefulWidget {
+  const SignUp({super.key});
+
+  @override
+  _SignUpState createState() => _SignUpState();
+}
+
+class _SignUpState extends State<SignUp> {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       body: Stack(
         children: [
-          //gambar background
-          //posisi gambar
-          Align(
-            alignment: Alignment.topLeft,
-            child: Image.asset("picture/SignUp.png"),
-          ),
-
-          //judul
-          Align(
-            alignment: Alignment.topLeft,
-            child: Padding(
-              padding: EdgeInsets.only(left: 45, top: 265),
-              child: Text(
-                "Sign Up",
-                style: TextStyle(fontFamily: "futura", fontSize: 36),
-              ),
-            ),
-          ),
-
-          //subjudul
-          Align(
-            alignment: Alignment.topLeft,
-            child: Padding(
-              padding: EdgeInsets.only(left: 45, top: 310),
-              child: Text(
-                "Please create account to continue",
-                style: TextStyle(fontFamily: "montserrat", fontSize: 18),
+          // Background Gradient
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Color(0xFF0392FB), Color(0xFF025795)],
               ),
             ),
           ),
 
           Align(
             alignment: Alignment.topCenter,
-            child: Container(
-              margin: EdgeInsets.only(top: 370),
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              width: MediaQuery.of(context).size.width * 0.8,
-              decoration: BoxDecoration(
-                color: Color.fromARGB(255, 255, 255, 255),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Color(0xFF0392FB),
-                  width: 2.0,
-                ),
-              ),
-              child: TextField(
-                controller: _UsernameController,
-                keyboardType: TextInputType.text,
-                style: TextStyle(
-                    color: Color(0xFF0392FB), fontFamily: "montserrat"),
-                decoration: InputDecoration(
-                  hintText: "Username",
-                  hintStyle: TextStyle(color: Color(0xFF0392FB)),
-                  border: InputBorder.none,
-                ),
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.topCenter,
-            child: Container(
-              margin: EdgeInsets.only(top: 440),
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              width: MediaQuery.of(context).size.width * 0.8,
-              decoration: BoxDecoration(
-                color: Color.fromARGB(255, 255, 255, 255),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Color(0xFF0392FB),
-                  width: 2.0,
-                ),
-              ),
-              child: TextField(
-                controller: _EmailController,
-                keyboardType: TextInputType.emailAddress,
-                style: TextStyle(
-                    color: Color(0xFF0392FB), fontFamily: "montserrat"),
-                decoration: InputDecoration(
-                  hintText: "Email",
-                  hintStyle: TextStyle(color: Color(0xFF0392FB)),
-                  border: InputBorder.none,
-                ),
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.topCenter,
-            child: Container(
-              margin: EdgeInsets.only(top: 510),
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              width: MediaQuery.of(context).size.width * 0.8,
-              decoration: BoxDecoration(
-                color: Color.fromARGB(255, 255, 255, 255),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Color(0xFF0392FB),
-                  width: 2.0,
-                ),
-              ),
-              child: TextField(
-                controller: _PhoneController,
-                keyboardType: TextInputType.phone,
-                style: TextStyle(
-                    color: Color(0xFF0392FB), fontFamily: "montserrat"),
-                decoration: InputDecoration(
-                  hintText: "Phone number",
-                  hintStyle: TextStyle(color: Color(0xFF0392FB)),
-                  border: InputBorder.none,
-                ),
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.topCenter,
-            child: Container(
-              margin: EdgeInsets.only(top: 580),
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              width: MediaQuery.of(context).size.width * 0.8,
-              decoration: BoxDecoration(
-                color: Color.fromARGB(255, 255, 255, 255),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Color(0xFF0392FB),
-                  width: 2.0,
-                ),
-              ),
-              child: TextField(
-                controller: _PasswordController,
-                keyboardType: TextInputType.text,
-                style: TextStyle(
-                    color: Color(0xFF0392FB), fontFamily: "montserrat"),
-                decoration: InputDecoration(
-                  hintText: "Password",
-                  hintStyle: TextStyle(color: Color(0xFF0392FB)),
-                  border: InputBorder.none,
-                ),
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.topLeft,
-            child: Padding(
-              padding: EdgeInsets.only(left: 85, top: 735),
-              child: Text(
-                "Already have an account?",
-                style: TextStyle(fontFamily: "montserrat", fontSize: 12),
-              ),
+            child: Image.asset(
+              "picture/Logo.png",
+              width: 350,
+              height: 350,
             ),
           ),
 
-          Align(
-            alignment: Alignment.topLeft,
-            child: Padding(
-              padding: EdgeInsets.only(left: 255, top: 735),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Login()),
-                  );
-                },
-                child: Text(
-                  "Login",
-                  style: TextStyle(
-                    fontFamily: "futura",
-                    fontSize: 13,
-                    color: Color(0xFF0392FB),
-                  ),
+          Positioned(
+            top: MediaQuery.of(context).size.height * 0.3,
+            left: 0,
+            right: 0,
+            child: SingleChildScrollView(
+              reverse: true,
+              child: Padding(
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom,
                 ),
-              ),
-            ),
-          ),
-
-          //tombol next
-          Align(
-            alignment: Alignment.center,
-            //posisi Y
-            child: Container(
-              margin: EdgeInsets.only(top: 490),
-              //arah transisi tombol
-              child: ElevatedButton(
-                onPressed: () {
-                  String Username = _UsernameController.text.trim();
-                  String Password = _PasswordController.text.trim();
-                  String Email = _EmailController.text.trim();
-                  String Phone = _PhoneController.text.trim();
-                  if (Username.isEmpty ||
-                      Password.isEmpty ||
-                      Email.isEmpty ||
-                      Phone.isEmpty) {
-                    // Jika input kosong, tampilkan SnackBar
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          "Please enter your username, email, phone number & password!",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        backgroundColor: Colors.red,
+                child: Container(
+                  height: MediaQuery.of(context).size.height,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(80),
+                      topRight: Radius.circular(80),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        blurRadius: 10,
+                        spreadRadius: 2,
+                        offset: const Offset(0, -3),
                       ),
-                    );
-                  } else {
-                    // Jika sudah terisi, navigasi ke halaman berikutnya
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => OpeningPage()),
-                    );
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF0392FB),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+                    ],
                   ),
-                ),
-                child: Text(
-                  "          Sign Up          ",
-                  style: TextStyle(
-                      fontSize: 24, color: Colors.white, fontFamily: "futura"),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 50, vertical: 40),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Sign Up",
+                          style: TextStyle(
+                            fontSize: 32,
+                            fontFamily: "futura",
+                          ),
+                        ),
+                        const Text(
+                          "Please create an account to continue",
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Color.fromARGB(255, 0, 0, 0)),
+                        ),
+                        const SizedBox(height: 20),
+
+                        // Input Username
+                        _buildTextField(_usernameController, "Username",
+                            Icons.person, TextInputType.text),
+                        const SizedBox(height: 15),
+
+                        // Input Email
+                        _buildTextField(_emailController, "Email", Icons.email,
+                            TextInputType.emailAddress),
+                        const SizedBox(height: 15),
+
+                        // Input Phone Number
+                        _buildTextField(_phoneController, "Phone Number",
+                            Icons.phone, TextInputType.phone),
+                        const SizedBox(height: 15),
+
+                        // Input Password
+                        _buildTextField(_passwordController, "Password",
+                            Icons.lock, TextInputType.visiblePassword,
+                            obscureText: true),
+                        const SizedBox(height: 25),
+
+                        // Tombol Sign Up
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                // Pindah ke halaman OpeningScreen
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => OpeningPage()),
+                                );
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 15),
+                              backgroundColor: const Color(0xFF0392FB),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                            ),
+                            child: const Text(
+                              "Sign Up",
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                  fontFamily: "futura"),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+
+                        // Login Link
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text("Already have an account?",
+                                style: TextStyle(fontSize: 14)),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text(
+                                "Login",
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF0392FB)),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  // Fungsi untuk membangun TextField
+  Widget _buildTextField(TextEditingController controller, String hint,
+      IconData icon, TextInputType keyboardType,
+      {bool obscureText = false}) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: keyboardType,
+      obscureText: obscureText,
+      decoration: InputDecoration(
+        prefixIcon: Icon(icon, color: Color(0xFF0392FB)),
+        hintText: hint,
+        filled: true,
+        fillColor: Colors.white,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(25),
+          borderSide: const BorderSide(color: Color(0xFF0392FB), width: 2),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(25),
+          borderSide: const BorderSide(color: Color(0xFF025795), width: 2),
+        ),
+      ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return "Please enter your $hint!";
+        }
+        return null;
+      },
     );
   }
 }

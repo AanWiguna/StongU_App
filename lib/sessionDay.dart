@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:strong_u/goal.dart';
+import 'package:strong_u/level.dart';
+import 'package:strong_u/page_indicator.dart';
 
 class SesssionDay extends StatefulWidget {
+  const SesssionDay({super.key});
+
   @override
   _SesssionDayState createState() => _SesssionDayState();
 }
@@ -18,7 +21,7 @@ class _SesssionDayState extends State<SesssionDay> {
     "Sunday": false,
   };
 
-  bool isNextEnabled = false; // Tambahkan state untuk tombol Next
+  bool isNextEnabled = false;
 
   void _updateNextButtonState() {
     setState(() {
@@ -32,15 +35,20 @@ class _SesssionDayState extends State<SesssionDay> {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          Positioned(
-            left: 0,
-            top: 0,
-            child: Image.asset("picture/SessionDay.png"),
+          // Gradient Background
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Color(0xFF0392FB), Color(0xFF025795)],
+              ),
+            ),
           ),
           Align(
             alignment: Alignment.topLeft,
             child: Padding(
-              padding: EdgeInsets.only(top: 40, left: 20),
+              padding: const EdgeInsets.only(top: 40, left: 20),
               child: IconButton(
                 icon: Icon(Icons.arrow_back, color: Colors.white, size: 30),
                 onPressed: () {
@@ -50,10 +58,32 @@ class _SesssionDayState extends State<SesssionDay> {
             ),
           ),
           Align(
-            alignment: Alignment.center,
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.72,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(200),
+                  topRight: Radius.circular(200),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 10,
+                    spreadRadius: 2,
+                    offset: const Offset(0, -3),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
             child: Padding(
-              padding: EdgeInsets.only(top: 690),
-              child: Image.asset("picture/titik_SessionDay.png"),
+              padding: const EdgeInsets.only(bottom: 110),
+              child: PageIndicator(currentIndex: 4, totalPages: 7),
             ),
           ),
           Align(
@@ -115,19 +145,31 @@ class _SesssionDayState extends State<SesssionDay> {
             ),
           ),
           Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 130),
+              child: Image.asset(
+                "picture/SessionDay.png",
+                width: 350,
+                height: 350,
+              ),
+            ),
+          ),
+
+          Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
-              padding: EdgeInsets.only(bottom: 50),
+              padding: const EdgeInsets.only(bottom: 50),
               child: ElevatedButton(
                 onPressed: () {
                   if (isNextEnabled) {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Goal()),
+                      MaterialPageRoute(builder: (context) => LevelSelection()),
                     );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
+                      const SnackBar(
                         content: Text(
                           "Please select at least one day!",
                           style: TextStyle(fontSize: 16),
@@ -141,17 +183,20 @@ class _SesssionDayState extends State<SesssionDay> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor:
-                      isNextEnabled ? Color(0xFF0392FB) : Colors.grey,
+                      isNextEnabled ? const Color(0xFF0392FB) : Colors.grey,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(50),
                   ),
                 ),
-                child: Text(
-                  "          Next!          ",
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: Colors.white,
-                    fontFamily: "Futura",
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                  child: Text(
+                    "Next!",
+                    style: TextStyle(
+                      fontSize: 24,
+                      color: Colors.white,
+                      fontFamily: "Futura",
+                    ),
                   ),
                 ),
               ),
