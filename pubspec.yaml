@@ -68,6 +68,9 @@ flutter:
     - picture/SessionDay.png
     - picture/Goal.png
     - picture/LevelSelection.png
+    - picture/profile.png
+    - picture/PT.png
+    - picture/PThalfed.png
 
 
   # To add assets to your application, add an assets section, like this:
