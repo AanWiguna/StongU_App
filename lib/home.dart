@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:strong_u/chatList.dart';
 import 'package:strong_u/programtaken.dart';
+import 'package:strong_u/user_profile.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -111,10 +113,8 @@ class Home extends StatelessWidget {
                         ),
                       ),
 
-                      SizedBox(
-                          width: 10), // Jarak antara search bar dan tombol chat
-
-                      // CHAT BUTTON (Di Bawah Menu)
+                      SizedBox(width: 10),
+                      // CHAT BUTTON
                       Container(
                         height: 40,
                         width: 40,
@@ -129,7 +129,7 @@ class Home extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => ProgramTaken()),
+                                  builder: (context) => Chatlist()),
                             );
                           },
                         ),
@@ -237,7 +237,7 @@ class Home extends StatelessWidget {
                                   children: [
                                     Container(
                                       padding: EdgeInsets.symmetric(
-                                          vertical: 6, horizontal: 12),
+                                          vertical: 5, horizontal: 10),
                                       constraints: BoxConstraints(
                                           minWidth: 60, maxWidth: 100),
                                       decoration: BoxDecoration(
@@ -266,23 +266,34 @@ class Home extends StatelessWidget {
                                         ],
                                       ),
                                     ),
-                                    SizedBox(width: 4),
+                                    SizedBox(width: 8),
                                     Container(
                                       padding: EdgeInsets.symmetric(
-                                          vertical: 14, horizontal: 15),
+                                          vertical: 10, horizontal: 9),
                                       decoration: BoxDecoration(
                                         color: Colors.white,
                                         borderRadius: BorderRadius.circular(8),
                                       ),
-                                      child: Text(
-                                        "Surabaya",
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontFamily: "Futura",
-                                          color: Color(0xFF0392FB),
-                                        ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(
+                                            Icons.star,
+                                            color: Colors.amber,
+                                            size: 16,
+                                          ),
+                                          SizedBox(width: 2),
+                                          Text(
+                                            "4.8",
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              fontFamily: "Futura",
+                                              color: Color(0xFF0392FB),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ),
+                                    )
                                   ],
                                 ),
                               ),
@@ -351,7 +362,7 @@ class Home extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ProgramTaken()),
+                    MaterialPageRoute(builder: (context) => ProfileUser()),
                   );
                 },
                 child: Container(
@@ -373,12 +384,7 @@ class Home extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.only(bottom: 20),
               child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Home()),
-                  );
-                },
+                onTap: () {},
                 child: Container(
                   width: 50,
                   height: 50,
@@ -422,17 +428,16 @@ class Home extends StatelessWidget {
                       return Padding(
                         padding: const EdgeInsets.only(right: 10, bottom: 10),
                         child: Container(
-                          width: 200,
+                          width: 180,
                           decoration: BoxDecoration(
                             color: Color(0xFF0392FB),
                             borderRadius: BorderRadius.circular(15),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black
-                                    .withOpacity(0.4), // Warna shadow
-                                blurRadius: 4, // Efek blur
-                                spreadRadius: 1, // Sebaran shadow
-                                offset: Offset(0, 4), // Arah shadow (ke bawah)
+                                color: Colors.black.withOpacity(0.4),
+                                blurRadius: 4,
+                                spreadRadius: 1,
+                                offset: Offset(0, 4),
                               ),
                             ],
                           ),
@@ -458,10 +463,8 @@ class Home extends StatelessWidget {
                                       begin: Alignment.bottomCenter,
                                       end: Alignment.topCenter,
                                       colors: [
-                                        Color(0xFF0267C1)
-                                            .withOpacity(0.5), // Biru gelap
-                                        Color(0xFF0392FB)
-                                            .withOpacity(0.0), // Transparan
+                                        Color(0xFF0267C1).withOpacity(0.5),
+                                        Color(0xFF0392FB).withOpacity(0.0),
                                       ],
                                     ),
                                   ),
@@ -479,7 +482,7 @@ class Home extends StatelessWidget {
                                       // Container "Start From 200K"
                                       Container(
                                         padding: EdgeInsets.symmetric(
-                                            vertical: 6, horizontal: 12),
+                                            vertical: 6, horizontal: 8),
                                         constraints: BoxConstraints(
                                             minWidth: 60, maxWidth: 100),
                                         decoration: BoxDecoration(
@@ -510,26 +513,38 @@ class Home extends StatelessWidget {
                                         ),
                                       ),
 
-                                      SizedBox(width: 4),
+                                      SizedBox(width: 8),
 
-                                      // Container "Surabaya"
                                       Container(
                                         padding: EdgeInsets.symmetric(
-                                            vertical: 14, horizontal: 15),
+                                            vertical: 5, horizontal: 10),
                                         decoration: BoxDecoration(
                                           color: Colors.white,
                                           borderRadius:
                                               BorderRadius.circular(8),
                                         ),
-                                        child: Text(
-                                          "Surabaya",
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            fontFamily: "Futura",
-                                            color: Color(0xFF0392FB),
-                                          ),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              "Audid",
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                fontFamily: "Futura",
+                                                color: Color(0xFF0392FB),
+                                              ),
+                                            ),
+                                            Text(
+                                              "Gym",
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                fontFamily: "Futura",
+                                                color: Color(0xFF0392FB),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ),
+                                      )
                                     ],
                                   ),
                                 ),

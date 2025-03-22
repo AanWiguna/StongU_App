@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:strong_u/chatList.dart';
 import 'package:strong_u/home.dart';
+import 'package:strong_u/user_profile.dart';
 
 class ProgramTaken extends StatelessWidget {
   const ProgramTaken({super.key});
@@ -111,10 +113,9 @@ class ProgramTaken extends StatelessWidget {
                         ),
                       ),
 
-                      SizedBox(
-                          width: 10), // Jarak antara search bar dan tombol chat
+                      SizedBox(width: 10),
 
-                      // CHAT BUTTON (Di Bawah Menu)
+                      // CHAT BUTTON
                       Container(
                         height: 40,
                         width: 40,
@@ -129,7 +130,7 @@ class ProgramTaken extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => ProgramTaken()),
+                                  builder: (context) => Chatlist()),
                             );
                           },
                         ),
@@ -237,7 +238,7 @@ class ProgramTaken extends StatelessWidget {
                                   children: [
                                     Container(
                                       padding: EdgeInsets.symmetric(
-                                          vertical: 6, horizontal: 12),
+                                          vertical: 5, horizontal: 10),
                                       constraints: BoxConstraints(
                                           minWidth: 60, maxWidth: 100),
                                       decoration: BoxDecoration(
@@ -266,23 +267,34 @@ class ProgramTaken extends StatelessWidget {
                                         ],
                                       ),
                                     ),
-                                    SizedBox(width: 4),
+                                    SizedBox(width: 8),
                                     Container(
                                       padding: EdgeInsets.symmetric(
-                                          vertical: 14, horizontal: 15),
+                                          vertical: 10, horizontal: 9),
                                       decoration: BoxDecoration(
                                         color: Colors.white,
                                         borderRadius: BorderRadius.circular(8),
                                       ),
-                                      child: Text(
-                                        "Surabaya",
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontFamily: "Futura",
-                                          color: Color(0xFF0392FB),
-                                        ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(
+                                            Icons.star,
+                                            color: Colors.amber,
+                                            size: 16,
+                                          ),
+                                          SizedBox(width: 2),
+                                          Text(
+                                            "4.8",
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              fontFamily: "Futura",
+                                              color: Color(0xFF0392FB),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ),
+                                    )
                                   ],
                                 ),
                               ),
@@ -322,12 +334,7 @@ class ProgramTaken extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.only(left: 55, bottom: 20),
               child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ProgramTaken()),
-                  );
-                },
+                onTap: () {},
                 child: Container(
                   width: 50,
                   height: 50,
@@ -351,7 +358,7 @@ class ProgramTaken extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ProgramTaken()),
+                    MaterialPageRoute(builder: (context) => ProfileUser()),
                   );
                 },
                 child: Container(
@@ -422,7 +429,7 @@ class ProgramTaken extends StatelessWidget {
                       return Padding(
                         padding: const EdgeInsets.only(right: 10, bottom: 10),
                         child: Container(
-                          width: 180,
+                          width: 170,
                           decoration: BoxDecoration(
                             color: Color(0xFF0392FB),
                             borderRadius: BorderRadius.circular(15),
@@ -457,10 +464,8 @@ class ProgramTaken extends StatelessWidget {
                                       begin: Alignment.bottomCenter,
                                       end: Alignment.topCenter,
                                       colors: [
-                                        Color(0xFF0267C1)
-                                            .withOpacity(0.5), // Biru gelap
-                                        Color(0xFF0392FB)
-                                            .withOpacity(0.0), // Transparan
+                                        Color(0xFF0267C1).withOpacity(0.5),
+                                        Color(0xFF0392FB).withOpacity(0.0),
                                       ],
                                     ),
                                   ),
@@ -476,7 +481,7 @@ class ProgramTaken extends StatelessWidget {
                                     children: [
                                       Container(
                                         padding: EdgeInsets.symmetric(
-                                            vertical: 6, horizontal: 12),
+                                            vertical: 6, horizontal: 6),
                                         constraints: BoxConstraints(
                                             minWidth: 60, maxWidth: 100),
                                         decoration: BoxDecoration(
@@ -506,13 +511,10 @@ class ProgramTaken extends StatelessWidget {
                                           ],
                                         ),
                                       ),
-
-                                      SizedBox(width: 4),
-
-                                      // Container "Surabaya"
+                                      SizedBox(width: 7),
                                       Container(
                                         padding: EdgeInsets.symmetric(
-                                            vertical: 14, horizontal: 15),
+                                            vertical: 14, horizontal: 10),
                                         decoration: BoxDecoration(
                                           color: Colors.white,
                                           borderRadius:
