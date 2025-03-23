@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:strong_u/PTprofile.dart';
 import 'package:strong_u/chatList.dart';
 import 'package:strong_u/home.dart';
 import 'package:strong_u/user_profile.dart';
@@ -173,133 +174,144 @@ class ProgramTaken extends StatelessWidget {
                     ),
                     itemCount: 10,
                     itemBuilder: (context, index) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: Color(0xFF0392FB),
-                          borderRadius: BorderRadius.circular(15),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
-                              blurRadius: 1,
-                              spreadRadius: 2,
-                              offset: Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: Stack(
-                          children: [
-                            Positioned.fill(
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 20),
-                                child: Image.asset(
-                                  "picture/PT.png",
-                                  fit: BoxFit.cover,
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PTProfile()),
+                          );
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Color(0xFF0392FB),
+                            borderRadius: BorderRadius.circular(15),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 1,
+                                spreadRadius: 2,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Stack(
+                            children: [
+                              Positioned.fill(
+                                child: Padding(
+                                  padding: EdgeInsets.only(top: 20),
+                                  child: Image.asset(
+                                    "picture/PT.png",
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
-                            ),
 
-                            // Gradasi
-                            Positioned.fill(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  gradient: LinearGradient(
-                                    begin: Alignment.bottomCenter,
-                                    end: Alignment.topCenter,
-                                    colors: [
-                                      Color(0xFF0267C1).withOpacity(0.75),
-                                      Color(0xFF0392FB).withOpacity(0.0),
+                              // Gradasi
+                              Positioned.fill(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    gradient: LinearGradient(
+                                      begin: Alignment.bottomCenter,
+                                      end: Alignment.topCenter,
+                                      colors: [
+                                        Color(0xFF0267C1).withOpacity(0.75),
+                                        Color(0xFF0392FB).withOpacity(0.0),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+
+                              Align(
+                                alignment: Alignment(0.0, 0.5),
+                                child: Text(
+                                  "BOBBY",
+                                  style: TextStyle(
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "Futura",
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+
+                              // Container keterangan PT
+                              Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Padding(
+                                  padding: EdgeInsets.only(bottom: 15),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 5, horizontal: 10),
+                                        constraints: BoxConstraints(
+                                            minWidth: 60, maxWidth: 100),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              "Start From",
+                                              style: TextStyle(
+                                                fontSize: 8,
+                                                fontWeight: FontWeight.w800,
+                                                color: Color(0xFF0392FB),
+                                              ),
+                                            ),
+                                            Text(
+                                              "200K",
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontFamily: "Futura",
+                                                color: Color(0xFF0392FB),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(width: 8),
+                                      Container(
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 10, horizontal: 9),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Icon(
+                                              Icons.star,
+                                              color: Colors.amber,
+                                              size: 16,
+                                            ),
+                                            SizedBox(width: 2),
+                                            Text(
+                                              "4.8",
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                fontFamily: "Futura",
+                                                color: Color(0xFF0392FB),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )
                                     ],
                                   ),
                                 ),
                               ),
-                            ),
-
-                            Align(
-                              alignment: Alignment(0.0, 0.5),
-                              child: Text(
-                                "BOBBY",
-                                style: TextStyle(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: "Futura",
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-
-                            // Container keterangan PT
-                            Align(
-                              alignment: Alignment.bottomCenter,
-                              child: Padding(
-                                padding: EdgeInsets.only(bottom: 15),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 5, horizontal: 10),
-                                      constraints: BoxConstraints(
-                                          minWidth: 60, maxWidth: 100),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(
-                                            "Start From",
-                                            style: TextStyle(
-                                              fontSize: 8,
-                                              fontWeight: FontWeight.w800,
-                                              color: Color(0xFF0392FB),
-                                            ),
-                                          ),
-                                          Text(
-                                            "200K",
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              fontFamily: "Futura",
-                                              color: Color(0xFF0392FB),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(width: 8),
-                                    Container(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 10, horizontal: 9),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Icon(
-                                            Icons.star,
-                                            color: Colors.amber,
-                                            size: 16,
-                                          ),
-                                          SizedBox(width: 2),
-                                          Text(
-                                            "4.8",
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                              fontFamily: "Futura",
-                                              color: Color(0xFF0392FB),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       );
                     },
