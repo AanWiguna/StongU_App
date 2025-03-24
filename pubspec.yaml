@@ -71,6 +71,15 @@ flutter:
     - picture/profile.png
     - picture/PT.png
     - picture/PThalfed.png
+    - picture/Sertifikat.jpeg
+    - picture/QRIS.png
+    - picture/BCA.jpg
+    - picture/BNI.png
+    - picture/BRI.png
+    - picture/DANA.png
+    - picture/linkaja.png
+    - picture/OVO.png
+    - picture/ShopeePay.png
 
 
   # To add assets to your application, add an assets section, like this:
