@@ -10,15 +10,13 @@ class LevelSelection extends StatefulWidget {
 }
 
 class _LevelSelectionState extends State<LevelSelection> {
-  // Menyimpan status pemilihan level
   Map<String, bool> selectedLevels = {
     "Beginner": false,
     "Intermediate": false,
     "Expert": false,
   };
 
-  bool isNextEnabled =
-      false; // Tombol Next diaktifkan jika ada level yang dipilih
+  bool isNextEnabled = false;
 
   void _updateNextButtonState() {
     setState(() {
@@ -190,7 +188,7 @@ class _LevelSelectionState extends State<LevelSelection> {
     );
   }
 
-  // Function untuk membangun tombol level
+  // Function tombol level
   Widget _buildLevelButton(String level, String experience) {
     bool isSelected = selectedLevels[level] ?? false;
 

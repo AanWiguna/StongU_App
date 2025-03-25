@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:strong_u/MyProfile.dart';
 import 'package:strong_u/PTprofile.dart';
+import 'package:strong_u/SettingPage.dart';
 import 'package:strong_u/chatList.dart';
 import 'package:strong_u/programtaken.dart';
 import 'package:strong_u/user_profile.dart';
+import 'package:strong_u/login.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -10,6 +13,121 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      endDrawer: Drawer(
+        child: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.all(16),
+              color: Color(0xFF0392FB),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundImage: AssetImage("picture/profile.png"),
+                  ),
+                  SizedBox(width: 10),
+                  Text(
+                    "Robert King",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Divider(color: Colors.grey),
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: <Widget>[
+                  ListTile(
+                    leading: Icon(Icons.home),
+                    title: Text('Home'),
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => Home()),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.chat),
+                    title: Text('Chat'),
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => Chatlist()),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.calendar_today),
+                    title: Text('Program Taken'),
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => ProgramTaken()),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.person),
+                    title: Text('My Profile'),
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => MyProfile()),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.settings),
+                    title: Text('Settings'),
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => SettingPage()),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.help),
+                    title: Text('FAQ'),
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => SettingPage()),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.info),
+                    title: Text('About App'),
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => SettingPage()),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.logout),
+                    title: Text('Logout'),
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => Login()),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
       body: Stack(
         children: [
           // HEADER
@@ -68,20 +186,25 @@ class Home extends StatelessWidget {
                       ),
 
                       // MENU BUTTON
-                      Container(
-                        height: 40,
-                        width: 40,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.white, width: 1.5),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: IconButton(
-                          icon: Icon(Icons.menu, color: Colors.white),
-                          iconSize: 22,
-                          onPressed: () {
-                            Scaffold.of(context).openDrawer();
-                          },
-                        ),
+                      Builder(
+                        builder: (context) {
+                          return Container(
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                              border:
+                                  Border.all(color: Colors.white, width: 1.5),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: IconButton(
+                              icon: Icon(Icons.menu, color: Colors.white),
+                              iconSize: 22,
+                              onPressed: () {
+                                Scaffold.of(context).openEndDrawer();
+                              },
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -320,7 +443,7 @@ class Home extends StatelessWidget {
             ),
           ),
 
-// NAVBAR BAWAH
+          // NAVBAR BAWAH
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
@@ -484,7 +607,6 @@ class Home extends StatelessWidget {
                                 ),
                               ),
 
-                              // Bagian harga dan lokasi
                               Align(
                                 alignment: Alignment.bottomCenter,
                                 child: Padding(
@@ -492,7 +614,6 @@ class Home extends StatelessWidget {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      // Container "Start From 200K"
                                       Container(
                                         padding: EdgeInsets.symmetric(
                                             vertical: 6, horizontal: 8),
@@ -525,9 +646,7 @@ class Home extends StatelessWidget {
                                           ],
                                         ),
                                       ),
-
                                       SizedBox(width: 8),
-
                                       Container(
                                         padding: EdgeInsets.symmetric(
                                             vertical: 5, horizontal: 10),

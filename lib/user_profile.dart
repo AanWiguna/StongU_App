@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:strong_u/MyProfile.dart';
+import 'package:strong_u/SettingPage.dart';
 import 'package:strong_u/home.dart';
 import 'package:strong_u/login.dart';
 import 'package:strong_u/programtaken.dart';
@@ -56,6 +58,7 @@ class ProfileUser extends StatelessWidget {
             ),
           ),
 
+          // ICON KANAN BAWAH (PROFILE)
           Align(
             alignment: Alignment.bottomRight,
             child: Padding(
@@ -136,7 +139,6 @@ class ProfileUser extends StatelessWidget {
                           fontFamily: "futura",
                         ),
                       ),
-
                       // EMAIL
                       Text(
                         "robertking@gmail.com",
@@ -145,7 +147,6 @@ class ProfileUser extends StatelessWidget {
                           fontSize: 14,
                         ),
                       ),
-
                       // NOMOR TELEPON
                       Text(
                         "+6281 2345 6789",
@@ -154,9 +155,14 @@ class ProfileUser extends StatelessWidget {
                           fontSize: 14,
                         ),
                       ),
-
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MyProfile()),
+                          );
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
@@ -190,7 +196,12 @@ class ProfileUser extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => MyProfile()),
+                        );
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
                         side: BorderSide(color: Color(0xFF0392FB)),
@@ -218,11 +229,17 @@ class ProfileUser extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: 20),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SettingPage()),
+                        );
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
                         side: BorderSide(color: Color(0xFF0392FB)),
@@ -240,7 +257,7 @@ class ProfileUser extends StatelessWidget {
                           ),
                           SizedBox(width: 15),
                           Text(
-                            "Setting",
+                            "Settings",
                             style: TextStyle(
                               color: Color(0xFF0392FB),
                               fontSize: 16,
@@ -251,106 +268,7 @@ class ProfileUser extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(height: 10),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        side: BorderSide(color: Color(0xFF0392FB)),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        padding: EdgeInsets.symmetric(vertical: 12),
-                      ),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(left: 20),
-                            child: Icon(Icons.help_outline,
-                                color: Color(0xFF0392FB)),
-                          ),
-                          SizedBox(width: 15),
-                          Text(
-                            "FAQ",
-                            style: TextStyle(
-                              color: Color(0xFF0392FB),
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        side: BorderSide(color: Color(0xFF0392FB)),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        padding: EdgeInsets.symmetric(vertical: 12),
-                      ),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(left: 20),
-                            child: Icon(Icons.info_outline,
-                                color: Color(0xFF0392FB)),
-                          ),
-                          SizedBox(width: 15),
-                          Text(
-                            "About App",
-                            style: TextStyle(
-                              color: Color(0xFF0392FB),
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        side: BorderSide(color: Color(0xFF0392FB)),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        padding: EdgeInsets.symmetric(vertical: 12),
-                      ),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(left: 20),
-                            child:
-                                Icon(Icons.history, color: Color(0xFF0392FB)),
-                          ),
-                          SizedBox(width: 15),
-                          Text(
-                            "Transaction History",
-                            style: TextStyle(
-                              color: Color(0xFF0392FB),
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 200),
+                  SizedBox(height: 400),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(

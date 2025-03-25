@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:strong_u/MyProfile.dart';
 import 'package:strong_u/PTprofile.dart';
+import 'package:strong_u/SettingPage.dart';
 import 'package:strong_u/chatList.dart';
 import 'package:strong_u/home.dart';
+import 'package:strong_u/programsTakenInfo.dart';
 import 'package:strong_u/user_profile.dart';
+import 'package:strong_u/login.dart';
 
 class ProgramTaken extends StatelessWidget {
   const ProgramTaken({super.key});
@@ -10,6 +14,121 @@ class ProgramTaken extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      endDrawer: Drawer(
+        child: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.all(16),
+              color: Color(0xFF0392FB),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundImage: AssetImage("picture/profile.png"),
+                  ),
+                  SizedBox(width: 10),
+                  Text(
+                    "Robert King",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Divider(color: Colors.grey),
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: <Widget>[
+                  ListTile(
+                    leading: Icon(Icons.home),
+                    title: Text('Home'),
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => Home()),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.chat),
+                    title: Text('Chat'),
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => Chatlist()),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.calendar_today),
+                    title: Text('Program Taken'),
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => ProgramTaken()),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.person),
+                    title: Text('My Profile'),
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => MyProfile()),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.settings),
+                    title: Text('Settings'),
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => SettingPage()),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.help),
+                    title: Text('FAQ'),
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => SettingPage()),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.info),
+                    title: Text('About App'),
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => SettingPage()),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.logout),
+                    title: Text('Logout'),
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => Login()),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
       body: Stack(
         children: [
           // HEADER
@@ -68,20 +187,25 @@ class ProgramTaken extends StatelessWidget {
                       ),
 
                       // MENU BUTTON
-                      Container(
-                        height: 40,
-                        width: 40,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.white, width: 1.5),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: IconButton(
-                          icon: Icon(Icons.menu, color: Colors.white),
-                          iconSize: 22,
-                          onPressed: () {
-                            Scaffold.of(context).openDrawer();
-                          },
-                        ),
+                      Builder(
+                        builder: (context) {
+                          return Container(
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                              border:
+                                  Border.all(color: Colors.white, width: 1.5),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: IconButton(
+                              icon: Icon(Icons.menu, color: Colors.white),
+                              iconSize: 22,
+                              onPressed: () {
+                                Scaffold.of(context).openEndDrawer();
+                              },
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -320,7 +444,8 @@ class ProgramTaken extends StatelessWidget {
               ],
             ),
           ),
-// NAVBAR BAWAH
+
+          // NAVBAR BAWAH
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
@@ -438,114 +563,125 @@ class ProgramTaken extends StatelessWidget {
                   child: ListView(
                     scrollDirection: Axis.horizontal,
                     children: List.generate(5, (index) {
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 10, bottom: 10),
-                        child: Container(
-                          width: 170,
-                          decoration: BoxDecoration(
-                            color: Color(0xFF0392FB),
-                            borderRadius: BorderRadius.circular(15),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.4),
-                                blurRadius: 4,
-                                spreadRadius: 1,
-                                offset: Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: Stack(
-                            children: [
-                              // Gambar PT
-                              Positioned.fill(
-                                child: Padding(
-                                  padding: EdgeInsets.only(top: 1),
-                                  child: Image.asset(
-                                    "picture/PThalfed.png",
-                                    fit: BoxFit.cover,
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Programstakeninfo(),
+                            ),
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 10, bottom: 10),
+                          child: Container(
+                            width: 170,
+                            decoration: BoxDecoration(
+                              color: Color(0xFF0392FB),
+                              borderRadius: BorderRadius.circular(15),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.4),
+                                  blurRadius: 4,
+                                  spreadRadius: 1,
+                                  offset: Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Stack(
+                              children: [
+                                // Gambar PT
+                                Positioned.fill(
+                                  child: Padding(
+                                    padding: EdgeInsets.only(top: 1),
+                                    child: Image.asset(
+                                      "picture/PThalfed.png",
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 ),
-                              ),
 
-                              // Efek gradasi
-                              Positioned.fill(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15),
-                                    gradient: LinearGradient(
-                                      begin: Alignment.bottomCenter,
-                                      end: Alignment.topCenter,
-                                      colors: [
-                                        Color(0xFF0267C1).withOpacity(0.5),
-                                        Color(0xFF0392FB).withOpacity(0.0),
+                                // Efek gradasi
+                                Positioned.fill(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      gradient: LinearGradient(
+                                        begin: Alignment.bottomCenter,
+                                        end: Alignment.topCenter,
+                                        colors: [
+                                          Color(0xFF0267C1).withOpacity(0.5),
+                                          Color(0xFF0392FB).withOpacity(0.0),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                                Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(bottom: 8),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 6, horizontal: 6),
+                                          constraints: BoxConstraints(
+                                              minWidth: 60, maxWidth: 100),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(
+                                                "Remaining",
+                                                style: TextStyle(
+                                                  fontSize: 8,
+                                                  fontWeight: FontWeight.w800,
+                                                  color: Color(0xFF0392FB),
+                                                ),
+                                              ),
+                                              Text(
+                                                "4",
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontFamily: "Futura",
+                                                  color: Color(0xFF0392FB),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(width: 7),
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 14, horizontal: 10),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                          child: Text(
+                                            "Bobby",
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              fontFamily: "Futura",
+                                              color: Color(0xFF0392FB),
+                                            ),
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
                                 ),
-                              ),
-
-                              Align(
-                                alignment: Alignment.bottomCenter,
-                                child: Padding(
-                                  padding: EdgeInsets.only(bottom: 8),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 6, horizontal: 6),
-                                        constraints: BoxConstraints(
-                                            minWidth: 60, maxWidth: 100),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text(
-                                              "Remaining",
-                                              style: TextStyle(
-                                                fontSize: 8,
-                                                fontWeight: FontWeight.w800,
-                                                color: Color(0xFF0392FB),
-                                              ),
-                                            ),
-                                            Text(
-                                              "4",
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                fontFamily: "Futura",
-                                                color: Color(0xFF0392FB),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(width: 7),
-                                      Container(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 14, horizontal: 10),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                        child: Text(
-                                          "Bobby",
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            fontFamily: "Futura",
-                                            color: Color(0xFF0392FB),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       );
@@ -554,7 +690,7 @@ class ProgramTaken extends StatelessWidget {
                 ),
               ],
             ),
-          ),
+          )
         ],
       ),
     );

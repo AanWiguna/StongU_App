@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:strong_u/PaymentPage.dart';
 import 'package:strong_u/chatPT.dart';
 
-class PTProfile extends StatefulWidget {
+class Programstakeninfo extends StatefulWidget {
   @override
-  _PTProfileState createState() => _PTProfileState();
+  _ProgramstakeninfoState createState() => _ProgramstakeninfoState();
 }
 
-class _PTProfileState extends State<PTProfile> {
+class _ProgramstakeninfoState extends State<Programstakeninfo> {
   int? selectedPlan;
   bool isSpecializationSelected = false;
   bool isReviewSelected = false;
@@ -65,6 +65,7 @@ class _PTProfileState extends State<PTProfile> {
           Padding(
             padding: EdgeInsets.only(top: 110),
             child: SingleChildScrollView(
+              // Make the content scrollable
               child: Align(
                 alignment: Alignment.topCenter,
                 child: Column(
@@ -340,6 +341,7 @@ class _PTProfileState extends State<PTProfile> {
                       ],
                     ),
                     SizedBox(height: 10),
+                    // Session Plan Section
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 30),
                       height: 300,
@@ -351,7 +353,7 @@ class _PTProfileState extends State<PTProfile> {
                                 ? "Specialization & Certification"
                                 : isReviewSelected
                                     ? "User Reviews"
-                                    : "Select Session Plan",
+                                    : "Session List",
                             style: TextStyle(
                               fontSize: 20,
                               fontFamily: "futura",
@@ -388,30 +390,27 @@ class _PTProfileState extends State<PTProfile> {
                                 : isReviewSelected
                                     ? reviewsList()
                                     : ListView.builder(
-                                        itemCount: 4,
+                                        itemCount: 8,
                                         itemBuilder: (context, index) {
-                                          switch (index) {
-                                            case 0:
-                                              return sessionPlanCard(
-                                                  4, 250000, 1000000, 1);
-                                            case 1:
-                                              return sessionPlanCard(
-                                                  8, 220000, 1760000, 2);
-                                            case 2:
-                                              return sessionPlanCard(
-                                                  12, 200000, 2400000, 3);
-                                            case 3:
-                                              return sessionPlanCard(
-                                                  16, 180000, 2880000, 4);
-                                            default:
-                                              return SizedBox.shrink();
-                                          }
+                                          List<String> sessionStatuses = [
+                                            "COMPLETE",
+                                            "COMPLETE",
+                                            "ON GOING",
+                                            "ON GOING",
+                                            "ON GOING",
+                                            "ON GOING",
+                                            "ON GOING",
+                                            "ON GOING",
+                                          ];
+                                          return sessionPlanCard(index + 1,
+                                              sessionStatuses[index], index);
                                         },
                                       ),
-                          )
+                          ),
                         ],
                       ),
                     ),
+
                     SizedBox(height: 10),
                     Padding(
                       padding: EdgeInsets.only(right: 30),
@@ -454,9 +453,7 @@ class _PTProfileState extends State<PTProfile> {
     );
   }
 
-  Widget sessionPlanCard(
-      int sessions, int pricePerSession, int subTotal, int planIndex) {
-    bool isSelected = selectedPlan == planIndex;
+  Widget sessionPlanCard(int sessionNumber, String status, int planIndex) {
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -467,9 +464,8 @@ class _PTProfileState extends State<PTProfile> {
         margin: EdgeInsets.only(bottom: 10),
         padding: EdgeInsets.all(15),
         decoration: BoxDecoration(
-          color: isSelected ? Color(0xFF0392FB) : Colors.white,
-          borderRadius: BorderRadius.circular(15),
-          border: Border.all(color: Color(0xFF0392FB), width: 1),
+          color: Color(0xFF0392FB),
+          borderRadius: BorderRadius.circular(10),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -477,46 +473,64 @@ class _PTProfileState extends State<PTProfile> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "$sessions Sessions",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontFamily: "futura",
-                    color: isSelected ? Colors.white : Color(0xFF0392FB),
-                  ),
-                ),
-                Text(
-                  "Rp ${pricePerSession.toString().replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')} /Session",
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: isSelected ? Colors.white : Color(0xFF0392FB),
+                RichText(
+                  text: TextSpan(
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontFamily: "futura",
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                    children: [
+                      TextSpan(text: "$sessionNumber"),
+                      WidgetSpan(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 2, top: 0),
+                          child: Text(
+                            _getOrdinalSuffix(sessionNumber),
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                      TextSpan(text: " Session"),
+                    ],
                   ),
                 ),
               ],
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  "Sub Total",
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: isSelected ? Colors.white : Color(0xFF0392FB)),
-                ),
-                Text(
-                  "Rp ${subTotal.toString().replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')}",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontFamily: "futura",
-                    color: isSelected ? Colors.white : Color(0xFF0392FB),
-                  ),
-                ),
-              ],
+            Text(
+              status,
+              style: TextStyle(
+                fontSize: 16,
+                fontFamily: "futura",
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  String _getOrdinalSuffix(int number) {
+    if (number >= 11 && number <= 13) {
+      return "th";
+    }
+    switch (number % 10) {
+      case 1:
+        return "st";
+      case 2:
+        return "nd";
+      case 3:
+        return "rd";
+      default:
+        return "th";
+    }
   }
 
   Widget specializationCard(String title, String description) {

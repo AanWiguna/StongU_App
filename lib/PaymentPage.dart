@@ -6,7 +6,7 @@ class PaymentPage extends StatefulWidget {
 }
 
 class _PaymentPageState extends State<PaymentPage> {
-  int selectedPlan = 1; // Default selected plan
+  int selectedPlan = 1;
 
   @override
   Widget build(BuildContext context) {
