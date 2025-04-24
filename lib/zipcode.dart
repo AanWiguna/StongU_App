@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:strong_u/birthday.dart';
 import 'package:strong_u/page_indicator.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Zipcode extends StatefulWidget {
   const Zipcode({super.key});
@@ -11,6 +13,25 @@ class Zipcode extends StatefulWidget {
 
 class _ZipcodeState extends State<Zipcode> {
   final TextEditingController _zipcodeController = TextEditingController();
+
+  void _addZipcode(String userId) async {
+    try {
+      String zipcode = _zipcodeController.text;
+
+      // Update Firestore document to add zipcode
+      await FirebaseFirestore.instance.collection('users').doc(userId).update({
+        'zipcode': zipcode,
+      });
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const Birthday()),
+      );
+    } catch (e) {
+      // Handle error
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Error: $e")));
+    }
+  }
 
   void _showSnackbar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -29,10 +50,13 @@ class _ZipcodeState extends State<Zipcode> {
     } else if (zip.length < 5 || zip.length > 6) {
       _showSnackbar("ZIP code must be 5 or 6 digits!");
     } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const Birthday()),
-      );
+      // Get the current user's ID
+      String? userId = FirebaseAuth.instance.currentUser?.uid;
+      if (userId != null) {
+        _addZipcode(userId); // Call the function to add/update zipcode
+      } else {
+        _showSnackbar("User  not logged in!");
+      }
     }
   }
 

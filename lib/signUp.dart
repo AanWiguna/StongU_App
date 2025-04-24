@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:strong_u/opening.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -8,12 +10,47 @@ class SignUp extends StatefulWidget {
   _SignUpState createState() => _SignUpState();
 }
 
+// controller
 class _SignUpState extends State<SignUp> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  void _registerUser() async {
+    try {
+      // Ambil data dari controller
+      String username = _usernameController.text;
+      String email = _emailController.text;
+      String phone = _phoneController.text;
+      String password = _passwordController.text;
+
+      // Register user dengan Firebase Auth
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+
+      // Ambil ID pengguna dari Firebase Authentication
+      String userId = userCredential.user!.uid;
+
+      // Menyimpan data ke Firestore
+      await FirebaseFirestore.instance.collection('users').doc(userId).set({
+        'username': username,
+        'email': email,
+        'phone': phone,
+        'password': password,
+      });
+      // Pindah ke halaman OpeningPage atau halaman lain
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => OpeningPage()),
+      );
+    } catch (e) {
+      // Tangani error jika gagal
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Error: $e")));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,14 +151,9 @@ class _SignUpState extends State<SignUp> {
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
-                            onPressed: () {
+                            onPressed: () async {
                               if (_formKey.currentState!.validate()) {
-                                // Pindah ke halaman OpeningScreen
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => OpeningPage()),
-                                );
+                                _registerUser();
                               }
                             },
                             style: ElevatedButton.styleFrom(
@@ -134,12 +166,14 @@ class _SignUpState extends State<SignUp> {
                             child: const Text(
                               "Sign Up",
                               style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.white,
-                                  fontFamily: "futura"),
+                                fontSize: 20,
+                                color: Colors.white,
+                                fontFamily: "futura",
+                              ),
                             ),
                           ),
                         ),
+
                         const SizedBox(height: 10),
 
                         // Login Link

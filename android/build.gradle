@@ -1,3 +1,15 @@
+buildscript {
+    repositories {
+        google()  // Pastikan repositori Google ada di sini
+        mavenCentral()
+    }
+    dependencies {
+        // Menambahkan classpath untuk plugin google-services
+        classpath 'com.google.gms:google-services:4.3.15'  // Sesuaikan dengan versi terbaru
+        classpath 'com.android.tools.build:gradle:7.4.0'  // Versi gradle sesuai dengan proyek
+    }
+}
+
 allprojects {
     repositories {
         google()

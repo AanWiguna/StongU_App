@@ -5,7 +5,7 @@ import 'package:strong_u/signUp.dart';
 class Login extends StatelessWidget {
   final TextEditingController _UsernameController = TextEditingController();
   final TextEditingController _PasswordController = TextEditingController();
-  final _formKey = GlobalKey<FormState>(); // Validation Key
+  final _formKey = GlobalKey<FormState>();
 
   Login({super.key});
 
