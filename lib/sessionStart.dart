@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:strong_u/page_indicator.dart';
 import 'package:strong_u/sessionDay.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SesssionStart extends StatefulWidget {
   const SesssionStart({super.key});
@@ -10,7 +12,6 @@ class SesssionStart extends StatefulWidget {
 }
 
 class _SesssionStartState extends State<SesssionStart> {
-  // Menyimpan status pemilihan tombol
   Map<String, bool> selectedSessions = {
     "Morning": false,
     "Noon": false,
@@ -25,13 +26,49 @@ class _SesssionStartState extends State<SesssionStart> {
     });
   }
 
+  Future<void> _saveSessionDataAndNext() async {
+    try {
+      String? userId = FirebaseAuth.instance.currentUser?.uid;
+
+      if (userId == null) {
+        _showSnackbar("User not logged in!");
+        return;
+      }
+
+      List<String> selected = selectedSessions.entries
+          .where((entry) => entry.value)
+          .map((entry) => entry.key)
+          .toList();
+
+      await FirebaseFirestore.instance.collection('users').doc(userId).update({
+        'preferred_sessions': selected,
+      });
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => SesssionDay()),
+      );
+    } catch (e) {
+      _showSnackbar("Error saving session: $e");
+    }
+  }
+
+  void _showSnackbar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.redAccent,
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          // Gradient Background
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -75,8 +112,6 @@ class _SesssionStartState extends State<SesssionStart> {
               ),
             ),
           ),
-
-          // Judul
           Align(
             alignment: Alignment.topCenter,
             child: Padding(
@@ -105,7 +140,6 @@ class _SesssionStartState extends State<SesssionStart> {
               ),
             ),
           ),
-          // Tombol sesi (multi-select)
           Align(
             alignment: Alignment(0.0, 0.45),
             child: Column(
@@ -117,7 +151,6 @@ class _SesssionStartState extends State<SesssionStart> {
               ],
             ),
           ),
-          // Indikator Halaman
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
@@ -136,7 +169,6 @@ class _SesssionStartState extends State<SesssionStart> {
               ),
             ),
           ),
-          // Tombol Next
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
@@ -144,22 +176,9 @@ class _SesssionStartState extends State<SesssionStart> {
               child: ElevatedButton(
                 onPressed: () {
                   if (isNextEnabled) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SesssionDay()),
-                    );
+                    _saveSessionDataAndNext();
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          "Please select at least one session!",
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        backgroundColor: Colors.red,
-                        behavior: SnackBarBehavior.floating,
-                        duration: Duration(seconds: 2),
-                      ),
-                    );
+                    _showSnackbar("Please select at least one session!");
                   }
                 },
                 style: ElevatedButton.styleFrom(
@@ -188,7 +207,6 @@ class _SesssionStartState extends State<SesssionStart> {
     );
   }
 
-  // Function untuk membangun tombol sesi
   Widget _buildSessionButton(String session, String time) {
     bool isSelected = selectedSessions[session] ?? false;
 
@@ -221,7 +239,6 @@ class _SesssionStartState extends State<SesssionStart> {
                   fontFamily: "futura",
                 ),
               ),
-              SizedBox(),
               Text(
                 time,
                 style: TextStyle(

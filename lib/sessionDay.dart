@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:strong_u/level.dart';
 import 'package:strong_u/page_indicator.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SesssionDay extends StatefulWidget {
   const SesssionDay({super.key});
@@ -10,7 +12,6 @@ class SesssionDay extends StatefulWidget {
 }
 
 class _SesssionDayState extends State<SesssionDay> {
-  // Menyimpan status pemilihan tombol
   Map<String, bool> selectedDays = {
     "Monday": false,
     "Tuesday": false,
@@ -29,13 +30,49 @@ class _SesssionDayState extends State<SesssionDay> {
     });
   }
 
+  Future<void> _saveDaysAndNext() async {
+    try {
+      String? userId = FirebaseAuth.instance.currentUser?.uid;
+
+      if (userId == null) {
+        _showSnackbar("User not logged in!");
+        return;
+      }
+
+      List<String> selected = selectedDays.entries
+          .where((entry) => entry.value)
+          .map((entry) => entry.key)
+          .toList();
+
+      await FirebaseFirestore.instance.collection('users').doc(userId).update({
+        'preferred_days': selected,
+      });
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => LevelSelection()),
+      );
+    } catch (e) {
+      _showSnackbar("Error saving days: $e");
+    }
+  }
+
+  void _showSnackbar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.redAccent,
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          // Gradient Background
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -155,7 +192,6 @@ class _SesssionDayState extends State<SesssionDay> {
               ),
             ),
           ),
-
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
@@ -163,22 +199,9 @@ class _SesssionDayState extends State<SesssionDay> {
               child: ElevatedButton(
                 onPressed: () {
                   if (isNextEnabled) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => LevelSelection()),
-                    );
+                    _saveDaysAndNext();
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          "Please select at least one day!",
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        backgroundColor: Colors.red,
-                        behavior: SnackBarBehavior.floating,
-                        duration: Duration(seconds: 2),
-                      ),
-                    );
+                    _showSnackbar("Please select at least one day!");
                   }
                 },
                 style: ElevatedButton.styleFrom(

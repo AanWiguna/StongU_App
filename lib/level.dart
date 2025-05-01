@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:strong_u/page_indicator.dart';
 import 'package:strong_u/goal.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LevelSelection extends StatefulWidget {
   const LevelSelection({super.key});
@@ -10,18 +12,52 @@ class LevelSelection extends StatefulWidget {
 }
 
 class _LevelSelectionState extends State<LevelSelection> {
-  Map<String, bool> selectedLevels = {
-    "Beginner": false,
-    "Intermediate": false,
-    "Expert": false,
-  };
-
+  String? _selectedLevel;
   bool isNextEnabled = false;
 
   void _updateNextButtonState() {
     setState(() {
-      isNextEnabled = selectedLevels.values.any((value) => value);
+      isNextEnabled = _selectedLevel != null;
     });
+  }
+
+  Future<void> _saveLevelAndNext() async {
+    try {
+      String? userId = FirebaseAuth.instance.currentUser?.uid;
+
+      if (userId == null) {
+        _showSnackbar("User not logged in!");
+        return;
+      }
+
+      if (_selectedLevel != null) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .update({
+          'Level': [_selectedLevel], // Store as a list with a single item
+        });
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Goal()),
+        );
+      } else {
+        _showSnackbar("Please select a level!");
+      }
+    } catch (e) {
+      _showSnackbar("Error saving Level: $e");
+    }
+  }
+
+  void _showSnackbar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.redAccent,
+        duration: const Duration(seconds: 2),
+      ),
+    );
   }
 
   @override
@@ -105,7 +141,7 @@ class _LevelSelectionState extends State<LevelSelection> {
               ),
             ),
           ),
-          // Tombol level (multi-select)
+          // Tombol level (single-select)
           Align(
             alignment: const Alignment(0.0, 0.45),
             child: Column(
@@ -144,15 +180,12 @@ class _LevelSelectionState extends State<LevelSelection> {
               child: ElevatedButton(
                 onPressed: () {
                   if (isNextEnabled) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Goal()),
-                    );
+                    _saveLevelAndNext();
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text(
-                          "Please select at least one level!",
+                          "Please select a level!",
                           style: TextStyle(fontSize: 16),
                         ),
                         backgroundColor: Colors.red,
@@ -190,7 +223,7 @@ class _LevelSelectionState extends State<LevelSelection> {
 
   // Function tombol level
   Widget _buildLevelButton(String level, String experience) {
-    bool isSelected = selectedLevels[level] ?? false;
+    bool isSelected = _selectedLevel == level;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
@@ -199,7 +232,7 @@ class _LevelSelectionState extends State<LevelSelection> {
         child: ElevatedButton(
           onPressed: () {
             setState(() {
-              selectedLevels[level] = !isSelected;
+              _selectedLevel = level;
             });
             _updateNextButtonState();
           },

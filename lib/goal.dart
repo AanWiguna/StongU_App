@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:strong_u/login.dart';
 import 'package:strong_u/page_indicator.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Goal extends StatefulWidget {
   const Goal({super.key});
@@ -22,6 +24,43 @@ class _GoalState extends State<Goal> {
   };
 
   bool get isBeginEnabled => selectedGoals.containsValue(true);
+
+  Future<void> _saveGoalAndNext() async {
+    try {
+      String? userId = FirebaseAuth.instance.currentUser?.uid;
+
+      if (userId == null) {
+        _showSnackbar("User not logged in!");
+        return;
+      }
+
+      List<String> selected = selectedGoals.entries
+          .where((entry) => entry.value)
+          .map((entry) => entry.key)
+          .toList();
+
+      await FirebaseFirestore.instance.collection('users').doc(userId).update({
+        'preferred_days': selected,
+      });
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Login()),
+      );
+    } catch (e) {
+      _showSnackbar("Error saving days: $e");
+    }
+  }
+
+  void _showSnackbar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.redAccent,
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -158,10 +197,13 @@ class _GoalState extends State<Goal> {
             child: Padding(
               padding: const EdgeInsets.only(bottom: 50),
               child: ElevatedButton(
-                onPressed: isBeginEnabled
-                    ? () => Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Login()))
-                    : null,
+                onPressed: () {
+                  if (isBeginEnabled) {
+                    _saveGoalAndNext();
+                  } else {
+                    _showSnackbar("Please select at least one goal!");
+                  }
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor:
                       isBeginEnabled ? Color(0xFF0392FB) : Colors.grey,

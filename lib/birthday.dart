@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:strong_u/page_indicator.dart';
 import 'package:strong_u/sessionStart.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-//stateful widget supaya bisa berubah
 class Birthday extends StatefulWidget {
   const Birthday({super.key});
 
@@ -10,12 +11,43 @@ class Birthday extends StatefulWidget {
   _BirthdayState createState() => _BirthdayState();
 }
 
-//state class hari, bulan, tahun (null)
 class _BirthdayState extends State<Birthday> {
-  //variabel
   String? selectedDate;
   String? selectedMonth;
   String? selectedYear;
+
+  void _addBirthday(String userId) async {
+    try {
+      String birthday =
+          "${selectedDate ?? ''} ${selectedMonth ?? ''} ${selectedYear ?? ''}";
+
+      if (birthday.trim().isEmpty ||
+          selectedDate == null ||
+          selectedMonth == null ||
+          selectedYear == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Please complete your birthday selection."),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      await FirebaseFirestore.instance.collection('users').doc(userId).update({
+        'birthday': birthday,
+      });
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const SesssionStart()),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error saving birthday: $e")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +55,7 @@ class _BirthdayState extends State<Birthday> {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          // Gradient Background
+          // Background
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -55,42 +87,40 @@ class _BirthdayState extends State<Birthday> {
               ),
             ),
           ),
-          // Tombol Back (pojok kiri atas)
+          // Back button
           Align(
             alignment: Alignment.topLeft,
             child: Padding(
-              padding: EdgeInsets.only(top: 40, left: 20),
+              padding: const EdgeInsets.only(top: 40, left: 20),
               child: IconButton(
-                icon: Icon(Icons.arrow_back, color: Colors.white, size: 30),
+                icon:
+                    const Icon(Icons.arrow_back, color: Colors.white, size: 30),
                 onPressed: () {
                   Navigator.pop(context);
                 },
               ),
             ),
           ),
-
-          // Judul
+          // Title
           Align(
             alignment: Alignment.topCenter,
             child: Padding(
-              padding: EdgeInsets.only(top: 475, left: 10, right: 10),
+              padding: const EdgeInsets.only(top: 475, left: 10, right: 10),
               child: SizedBox(
                 width: MediaQuery.of(context).size.width - 20,
                 child: Text.rich(
                   TextSpan(
                     text: "Choose Your ",
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.black,
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
                       fontFamily: "Futura",
                     ),
-                    children: [
+                    children: const [
                       TextSpan(
                         text: "Birthday",
-                        style: TextStyle(
-                          color: Color(0xFF0392FB),
-                        ),
+                        style: TextStyle(color: Color(0xFF0392FB)),
                       ),
                       TextSpan(text: "!"),
                     ],
@@ -100,49 +130,50 @@ class _BirthdayState extends State<Birthday> {
               ),
             ),
           ),
-          // Tombol Tanggal, Bulan, Tahun
+          // Date/Month/Year buttons
           Align(
             alignment: Alignment.topCenter,
             child: Padding(
-              padding: EdgeInsets.only(top: 530, left: 20, right: 20),
+              padding: const EdgeInsets.only(top: 530, left: 20, right: 20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   _buildOptionButton("Date", selectedDate, () {
-                    _showSelectionModal(context, "Select Date",
-                        List.generate(31, (i) => "${i + 1}"), (val) {
-                      setState(() {
-                        selectedDate = val;
-                      });
-                    });
+                    _showSelectionModal(
+                      context,
+                      "Select Date",
+                      List.generate(31, (i) => "${i + 1}"),
+                      (val) => setState(() => selectedDate = val),
+                    );
                   }),
                   _buildOptionButton("Month", selectedMonth, () {
-                    _showSelectionModal(context, "Select Month", [
-                      "January",
-                      "February",
-                      "March",
-                      "April",
-                      "May",
-                      "June",
-                      "July",
-                      "August",
-                      "September",
-                      "October",
-                      "November",
-                      "December"
-                    ], (val) {
-                      setState(() {
-                        selectedMonth = val;
-                      });
-                    });
+                    _showSelectionModal(
+                      context,
+                      "Select Month",
+                      [
+                        "January",
+                        "February",
+                        "March",
+                        "April",
+                        "May",
+                        "June",
+                        "July",
+                        "August",
+                        "September",
+                        "October",
+                        "November",
+                        "December"
+                      ],
+                      (val) => setState(() => selectedMonth = val),
+                    );
                   }),
                   _buildOptionButton("Year", selectedYear, () {
-                    _showSelectionModal(context, "Select Year",
-                        List.generate(126, (i) => "${2025 - i}"), (val) {
-                      setState(() {
-                        selectedYear = val;
-                      });
-                    });
+                    _showSelectionModal(
+                      context,
+                      "Select Year",
+                      List.generate(126, (i) => "${2025 - i}"),
+                      (val) => setState(() => selectedYear = val),
+                    );
                   }),
                 ],
               ),
@@ -161,12 +192,12 @@ class _BirthdayState extends State<Birthday> {
           ),
           Align(
             alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 110),
+            child: const Padding(
+              padding: EdgeInsets.only(bottom: 110),
               child: PageIndicator(currentIndex: 2, totalPages: 7),
             ),
           ),
-          // Tombol Next
+          // Next button
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
@@ -176,10 +207,17 @@ class _BirthdayState extends State<Birthday> {
                   if (selectedDate != null &&
                       selectedMonth != null &&
                       selectedYear != null) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SesssionStart()),
-                    );
+                    String? userId = FirebaseAuth.instance.currentUser?.uid;
+                    if (userId != null) {
+                      _addBirthday(userId);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("User not logged in!"),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -214,28 +252,25 @@ class _BirthdayState extends State<Birthday> {
     );
   }
 
-//atur widget input hari, bulan, tahun
   Widget _buildOptionButton(
       String label, String? selectedValue, VoidCallback onPressed) {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: Color(0xFF50BDF5),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        backgroundColor: const Color(0xFF50BDF5),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
       child: Text(
         selectedValue ?? label,
-        style: TextStyle(
-            fontSize: 18,
-            color: const Color.fromARGB(255, 255, 255, 255),
-            fontFamily: "futura"),
+        style: const TextStyle(
+          fontSize: 18,
+          color: Colors.white,
+          fontFamily: "Futura",
+        ),
       ),
     );
   }
 
-//menampilkan opsi
   void _showSelectionModal(BuildContext context, String title,
       List<String> options, Function(String) onSelect) {
     showModalBottomSheet(
@@ -246,10 +281,10 @@ class _BirthdayState extends State<Birthday> {
           child: Column(
             children: [
               Padding(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 child: Text(title,
-                    style:
-                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold)),
               ),
               Expanded(
                 child: ListView.builder(
