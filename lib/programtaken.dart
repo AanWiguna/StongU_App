@@ -7,9 +7,41 @@ import 'package:strong_u/home.dart';
 import 'package:strong_u/programsTakenInfo.dart';
 import 'package:strong_u/user_profile.dart';
 import 'package:strong_u/login.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class ProgramTaken extends StatelessWidget {
+class ProgramTaken extends StatefulWidget {
   const ProgramTaken({super.key});
+
+  @override
+  _ProgramTakenState createState() => _ProgramTakenState();
+}
+
+class _ProgramTakenState extends State<ProgramTaken> {
+  String userName = "";
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserName();
+  }
+
+  Future<void> _fetchUserName() async {
+    try {
+      final uid = FirebaseAuth.instance.currentUser?.uid;
+      if (uid != null) {
+        final doc =
+            await FirebaseFirestore.instance.collection('users').doc(uid).get();
+        if (doc.exists) {
+          setState(() {
+            userName = doc.data()?['username'] ?? 'No Name';
+          });
+        }
+      }
+    } catch (e) {
+      print("Error fetching user name: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +60,7 @@ class ProgramTaken extends StatelessWidget {
                   ),
                   SizedBox(width: 10),
                   Text(
-                    "Robert King",
+                    userName,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,
@@ -174,11 +206,11 @@ class ProgramTaken extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                "Robert King",
+                                userName,
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 18,
-                                  fontFamily: "futura",
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ],

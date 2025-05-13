@@ -6,9 +6,41 @@ import 'package:strong_u/chatList.dart';
 import 'package:strong_u/programtaken.dart';
 import 'package:strong_u/user_profile.dart';
 import 'package:strong_u/login.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   const Home({super.key});
+
+  @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  String userName = "";
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserName();
+  }
+
+  Future<void> _fetchUserName() async {
+    try {
+      final uid = FirebaseAuth.instance.currentUser?.uid;
+      if (uid != null) {
+        final doc =
+            await FirebaseFirestore.instance.collection('users').doc(uid).get();
+        if (doc.exists) {
+          setState(() {
+            userName = doc.data()?['username'] ?? 'No Name';
+          });
+        }
+      }
+    } catch (e) {
+      print("Error fetching user name: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +59,7 @@ class Home extends StatelessWidget {
                   ),
                   SizedBox(width: 10),
                   Text(
-                    "Robert King",
+                    userName,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,
@@ -173,7 +205,7 @@ class Home extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                "Robert King",
+                                userName,
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 18,

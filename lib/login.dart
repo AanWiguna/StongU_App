@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:strong_u/home.dart';
 import 'package:strong_u/signUp.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Login extends StatelessWidget {
   final TextEditingController _UsernameController = TextEditingController();
@@ -8,6 +10,41 @@ class Login extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
 
   Login({super.key});
+
+  Future<void> _loginUser(BuildContext context) async {
+    String username = _UsernameController.text.trim();
+    String password = _PasswordController.text;
+
+    try {
+      // Cari user berdasarkan username
+      QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where('username', isEqualTo: username)
+          .limit(1)
+          .get();
+
+      if (snapshot.docs.isEmpty) {
+        throw Exception('Username not found');
+      }
+
+      // Ambil email dari data Firestore
+      String email = snapshot.docs.first['email'];
+
+      // Login ke Firebase Auth menggunakan email dan password
+      await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+
+      // Jika berhasil login, navigasi ke halaman Home
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => Home()),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Login failed: $e")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +103,6 @@ class Login extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Judul
                       const Text(
                         "Login",
                         style: TextStyle(
@@ -76,8 +112,7 @@ class Login extends StatelessWidget {
                       ),
                       const Text(
                         "Please sign in to continue",
-                        style: TextStyle(
-                            fontSize: 16, color: Color.fromARGB(255, 0, 0, 0)),
+                        style: TextStyle(fontSize: 16, color: Colors.black),
                       ),
                       const SizedBox(height: 20),
 
@@ -148,10 +183,7 @@ class Login extends StatelessWidget {
                         child: ElevatedButton(
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => Home()),
-                              );
+                              _loginUser(context);
                             }
                           },
                           style: ElevatedButton.styleFrom(

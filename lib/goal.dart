@@ -40,7 +40,7 @@ class _GoalState extends State<Goal> {
           .toList();
 
       await FirebaseFirestore.instance.collection('users').doc(userId).update({
-        'preferred_days': selected,
+        'goals': selected,
       });
 
       Navigator.push(

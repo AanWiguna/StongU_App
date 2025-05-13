@@ -35,18 +35,19 @@ class _LevelSelectionState extends State<LevelSelection> {
             .collection('users')
             .doc(userId)
             .update({
-          'Level': [_selectedLevel], // Store as a list with a single item
+          'level':
+              _selectedLevel, // Store as a string to match profile page format
         });
 
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => Goal()),
+          MaterialPageRoute(builder: (context) => const Goal()),
         );
       } else {
         _showSnackbar("Please select a level!");
       }
     } catch (e) {
-      _showSnackbar("Error saving Level: $e");
+      _showSnackbar("Error saving level: $e");
     }
   }
 
@@ -66,7 +67,7 @@ class _LevelSelectionState extends State<LevelSelection> {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          // Gradient Background
+          // Background Gradient
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -76,6 +77,8 @@ class _LevelSelectionState extends State<LevelSelection> {
               ),
             ),
           ),
+
+          // Back button
           Align(
             alignment: Alignment.topLeft,
             child: Padding(
@@ -89,6 +92,8 @@ class _LevelSelectionState extends State<LevelSelection> {
               ),
             ),
           ),
+
+          // White panel
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
@@ -112,7 +117,7 @@ class _LevelSelectionState extends State<LevelSelection> {
             ),
           ),
 
-          // Judul
+          // Title
           Align(
             alignment: Alignment.topCenter,
             child: Padding(
@@ -141,7 +146,8 @@ class _LevelSelectionState extends State<LevelSelection> {
               ),
             ),
           ),
-          // Tombol level (single-select)
+
+          // Level buttons
           Align(
             alignment: const Alignment(0.0, 0.45),
             child: Column(
@@ -153,14 +159,17 @@ class _LevelSelectionState extends State<LevelSelection> {
               ],
             ),
           ),
-          // Indikator Halaman
-          Align(
+
+          // Page Indicator
+          const Align(
             alignment: Alignment.bottomCenter,
-            child: const Padding(
+            child: Padding(
               padding: EdgeInsets.only(bottom: 110),
               child: PageIndicator(currentIndex: 5, totalPages: 7),
             ),
           ),
+
+          // Top image
           Align(
             alignment: Alignment.topCenter,
             child: Padding(
@@ -172,7 +181,8 @@ class _LevelSelectionState extends State<LevelSelection> {
               ),
             ),
           ),
-          // Tombol Next
+
+          // Next button
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
@@ -221,7 +231,7 @@ class _LevelSelectionState extends State<LevelSelection> {
     );
   }
 
-  // Function tombol level
+  // Button builder
   Widget _buildLevelButton(String level, String experience) {
     bool isSelected = _selectedLevel == level;
 
