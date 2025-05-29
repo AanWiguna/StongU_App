@@ -328,16 +328,10 @@ class _ProgramTakenState extends State<ProgramTaken> {
                       mainAxisSpacing: 10,
                       childAspectRatio: 2 / 3,
                     ),
-                    itemCount: 10,
+                    itemCount: 2,
                     itemBuilder: (context, index) {
                       return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => PTProfile()),
-                          );
-                        },
+                        onTap: () {},
                         child: Container(
                           decoration: BoxDecoration(
                             color: Color(0xFF0392FB),

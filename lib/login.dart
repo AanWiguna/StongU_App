@@ -3,20 +3,46 @@ import 'package:strong_u/home.dart';
 import 'package:strong_u/signUp.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class Login extends StatelessWidget {
+class Login extends StatefulWidget {
+  const Login({super.key});
+
+  @override
+  State<Login> createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
   final TextEditingController _UsernameController = TextEditingController();
   final TextEditingController _PasswordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  Login({super.key});
+  bool _autoLogin = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkAutoLogin();
+  }
+
+  Future<void> _checkAutoLogin() async {
+    final prefs = await SharedPreferences.getInstance();
+    bool? savedAutoLogin = prefs.getBool('autoLogin');
+    User? currentUser = FirebaseAuth.instance.currentUser;
+
+    if (savedAutoLogin == true && currentUser != null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => Home()),
+      );
+    }
+  }
 
   Future<void> _loginUser(BuildContext context) async {
     String username = _UsernameController.text.trim();
     String password = _PasswordController.text;
 
     try {
-      // Cari user berdasarkan username
       QuerySnapshot snapshot = await FirebaseFirestore.instance
           .collection('users')
           .where('username', isEqualTo: username)
@@ -27,14 +53,14 @@ class Login extends StatelessWidget {
         throw Exception('Username not found');
       }
 
-      // Ambil email dari data Firestore
       String email = snapshot.docs.first['email'];
 
-      // Login ke Firebase Auth menggunakan email dan password
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
 
-      // Jika berhasil login, navigasi ke halaman Home
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('autoLogin', _autoLogin);
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => Home()),
@@ -175,7 +201,25 @@ class Login extends StatelessWidget {
                           return null;
                         },
                       ),
-                      const SizedBox(height: 25),
+
+                      // Checkbox: Login Otomatis
+                      Row(
+                        children: [
+                          Checkbox(
+                            value: _autoLogin,
+                            onChanged: (value) {
+                              setState(() {
+                                _autoLogin = value ?? false;
+                              });
+                            },
+                            activeColor: const Color(0xFF0392FB),
+                          ),
+                          const Text(
+                            "Remember Me",
+                            style: TextStyle(fontSize: 14),
+                          ),
+                        ],
+                      ),
 
                       // Tombol Login
                       SizedBox(
@@ -202,7 +246,6 @@ class Login extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 8),
 
                       // Sign Up Link
                       Row(

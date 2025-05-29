@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:strong_u/auth_check.dart';
 import 'package:strong_u/login.dart';
 import 'dart:async';
 
@@ -16,7 +17,7 @@ class _LoadingState extends State<Loading> {
 
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => Login()),
+        MaterialPageRoute(builder: (context) => const AuthCheck()),
       );
     });
   }

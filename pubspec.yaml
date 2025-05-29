@@ -72,7 +72,7 @@ flutter:
     - picture/Goal.png
     - picture/LevelSelection.png
     - picture/profile.png
-    - picture/PT.png
+    - picture/PT1.png
     - picture/PThalfed.png
     - picture/Sertifikat.jpeg
     - picture/QRIS.png
@@ -83,6 +83,14 @@ flutter:
     - picture/linkaja.png
     - picture/OVO.png
     - picture/ShopeePay.png
+    - picture/PT2.png
+    - picture/PT3.png
+    - picture/PT4.png
+    - picture/PT5.png
+    - picture/PT6.png
+    - picture/PT7.png
+    - picture/PT8.png
+    - picture/PT9.png
 
 
   # To add assets to your application, add an assets section, like this:

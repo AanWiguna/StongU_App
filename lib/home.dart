@@ -18,11 +18,13 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   String userName = "";
+  List<Map<String, dynamic>> ptList = [];
 
   @override
   void initState() {
     super.initState();
     _fetchUserName();
+    _fetchPTData();
   }
 
   Future<void> _fetchUserName() async {
@@ -39,6 +41,27 @@ class _HomeState extends State<Home> {
       }
     } catch (e) {
       print("Error fetching user name: $e");
+    }
+  }
+
+  Future<void> _fetchPTData() async {
+    try {
+      final snapshot = await FirebaseFirestore.instance.collection('PT').get();
+      setState(() {
+        ptList = snapshot.docs.map((doc) {
+          return {
+            'name': doc['Nama'],
+            'price': "${doc['Harga']}K",
+            'rating': (doc['Rating'] as num).toDouble(),
+            'location': doc['Lokasi'],
+            'exp': doc['Exp'],
+            'description': doc['Deskripsi'],
+            'image': "picture/PT${doc.id}.png",
+          };
+        }).toList();
+      });
+    } catch (e) {
+      print("Error fetching PT data: $e");
     }
   }
 
@@ -297,275 +320,6 @@ class _HomeState extends State<Home> {
             ),
           ),
 
-          // PT RECOMMENDATION
-          Padding(
-            padding: EdgeInsets.only(top: 370, left: 20, right: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "PT Recommendation",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontFamily: "futura",
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 8),
-
-                // SCROLLABLE GRID CONTAINER
-                Expanded(
-                  child: GridView.builder(
-                    padding: EdgeInsets.only(bottom: 100),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
-                      childAspectRatio: 2 / 3,
-                    ),
-                    itemCount: 10,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => PTProfile()),
-                          );
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Color(0xFF0392FB),
-                            borderRadius: BorderRadius.circular(15),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.2),
-                                blurRadius: 1,
-                                spreadRadius: 2,
-                                offset: Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: Stack(
-                            children: [
-                              Positioned.fill(
-                                child: Padding(
-                                  padding: EdgeInsets.only(top: 20),
-                                  child: Image.asset(
-                                    "picture/PT.png",
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-
-                              // Gradasi
-                              Positioned.fill(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15),
-                                    gradient: LinearGradient(
-                                      begin: Alignment.bottomCenter,
-                                      end: Alignment.topCenter,
-                                      colors: [
-                                        Color(0xFF0267C1).withOpacity(0.75),
-                                        Color(0xFF0392FB).withOpacity(0.0),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-
-                              Align(
-                                alignment: Alignment(0.0, 0.5),
-                                child: Text(
-                                  "BOBBY",
-                                  style: TextStyle(
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: "Futura",
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-
-                              // Container keterangan PT
-                              Align(
-                                alignment: Alignment.bottomCenter,
-                                child: Padding(
-                                  padding: EdgeInsets.only(bottom: 15),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 5, horizontal: 10),
-                                        constraints: BoxConstraints(
-                                            minWidth: 60, maxWidth: 100),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text(
-                                              "Start From",
-                                              style: TextStyle(
-                                                fontSize: 8,
-                                                fontWeight: FontWeight.w800,
-                                                color: Color(0xFF0392FB),
-                                              ),
-                                            ),
-                                            Text(
-                                              "200K",
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                fontFamily: "Futura",
-                                                color: Color(0xFF0392FB),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(width: 8),
-                                      Container(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 10, horizontal: 9),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Icon(
-                                              Icons.star,
-                                              color: Colors.amber,
-                                              size: 16,
-                                            ),
-                                            SizedBox(width: 2),
-                                            Text(
-                                              "4.8",
-                                              style: TextStyle(
-                                                fontSize: 15,
-                                                fontFamily: "Futura",
-                                                color: Color(0xFF0392FB),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // NAVBAR BAWAH
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              width: double.infinity,
-              height: 80,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    blurRadius: 10,
-                    spreadRadius: 2,
-                    offset: Offset(0, -4),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          // ICON KIRI BAWAH (KALENDAR)
-          Align(
-            alignment: Alignment.bottomLeft,
-            child: Padding(
-              padding: EdgeInsets.only(left: 55, bottom: 20),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ProgramTaken()),
-                  );
-                },
-                child: Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                  ),
-                  child:
-                      Icon(Icons.calendar_today, color: Colors.black, size: 30),
-                ),
-              ),
-            ),
-          ),
-
-          // ICON KANAN BAWAH (PROFILE)
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Padding(
-              padding: EdgeInsets.only(right: 55, bottom: 20),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ProfileUser()),
-                  );
-                },
-                child: Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(Icons.person_2_outlined,
-                      color: Colors.black, size: 45),
-                ),
-              ),
-            ),
-          ),
-          // ICON TENGAH (HOME)
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: EdgeInsets.only(bottom: 20),
-              child: GestureDetector(
-                onTap: () {},
-                child: Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(Icons.home, color: Color(0xFF0392FB), size: 45),
-                ),
-              ),
-            ),
-          ),
-
           // UPCOMING PROGRAMS SECTION
           Padding(
             padding: EdgeInsets.only(top: 200, left: 20, right: 20),
@@ -592,7 +346,7 @@ class _HomeState extends State<Home> {
                   clipBehavior: Clip.none,
                   child: ListView(
                     scrollDirection: Axis.horizontal,
-                    children: List.generate(5, (index) {
+                    children: List.generate(1, (index) {
                       return Padding(
                         padding: const EdgeInsets.only(right: 10, bottom: 10),
                         child: Container(
@@ -721,6 +475,279 @@ class _HomeState extends State<Home> {
                   ),
                 ),
               ],
+            ),
+          ),
+
+          // PT RECOMMENDATION
+          Padding(
+            padding: EdgeInsets.only(top: 370, left: 20, right: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "PT Recommendation",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontFamily: "futura",
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 8),
+                Expanded(
+                  child: GridView.builder(
+                    padding: EdgeInsets.only(bottom: 100),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      childAspectRatio: 2 / 3,
+                    ),
+                    itemCount: ptList.length,
+                    itemBuilder: (context, index) {
+                      final pt = ptList[index];
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PTProfile(
+                                name: pt['name'],
+                                price: pt['price'],
+                                rating: pt['rating'],
+                                image: pt['image'],
+                                location: pt['location'],
+                                exp: pt['exp'],
+                                description: pt['description'],
+                              ),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Color(0xFF0392FB),
+                            borderRadius: BorderRadius.circular(15),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 1,
+                                spreadRadius: 2,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Stack(
+                            children: [
+                              Positioned.fill(
+                                child: Padding(
+                                  padding: EdgeInsets.only(top: 20),
+                                  child: Image.asset(
+                                    pt['image'] ?? "picture/PT1.png",
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              Positioned.fill(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    gradient: LinearGradient(
+                                      begin: Alignment.bottomCenter,
+                                      end: Alignment.topCenter,
+                                      colors: [
+                                        Color(0xFF0267C1).withOpacity(0.75),
+                                        Color(0xFF0392FB).withOpacity(0.0),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment(0.0, 0.5),
+                                child: Text(
+                                  pt['name'] ?? "NO NAME",
+                                  style: TextStyle(
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "Futura",
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Padding(
+                                  padding: EdgeInsets.only(bottom: 15),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 5, horizontal: 10),
+                                        constraints: BoxConstraints(
+                                            minWidth: 60, maxWidth: 100),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              "Start From",
+                                              style: TextStyle(
+                                                fontSize: 8,
+                                                fontWeight: FontWeight.w800,
+                                                color: Color(0xFF0392FB),
+                                              ),
+                                            ),
+                                            Text(
+                                              pt['price'] ?? "N/A",
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontFamily: "Futura",
+                                                color: Color(0xFF0392FB),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(width: 8),
+                                      Container(
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 10, horizontal: 9),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Icon(
+                                              Icons.star,
+                                              color: Colors.amber,
+                                              size: 16,
+                                            ),
+                                            SizedBox(width: 2),
+                                            Text(
+                                              pt['rating']?.toString() ?? "0",
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                fontFamily: "Futura",
+                                                color: Color(0xFF0392FB),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // NAVBAR BAWAH
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              width: double.infinity,
+              height: 80,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 10,
+                    spreadRadius: 2,
+                    offset: Offset(0, -4),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // ICON KIRI BAWAH (KALENDAR)
+          Align(
+            alignment: Alignment.bottomLeft,
+            child: Padding(
+              padding: EdgeInsets.only(left: 55, bottom: 20),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ProgramTaken()),
+                  );
+                },
+                child: Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  child:
+                      Icon(Icons.calendar_today, color: Colors.black, size: 30),
+                ),
+              ),
+            ),
+          ),
+
+          // ICON KANAN BAWAH (PROFILE)
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: EdgeInsets.only(right: 55, bottom: 20),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ProfileUser()),
+                  );
+                },
+                child: Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(Icons.person_2_outlined,
+                      color: Colors.black, size: 45),
+                ),
+              ),
+            ),
+          ),
+
+          // ICON TENGAH (HOME)
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 20),
+              child: GestureDetector(
+                onTap: () {},
+                child: Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(Icons.home, color: Color(0xFF0392FB), size: 45),
+                ),
+              ),
             ),
           ),
         ],

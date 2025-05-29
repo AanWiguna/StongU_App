@@ -6,6 +6,7 @@ import 'package:strong_u/login.dart';
 import 'package:strong_u/programtaken.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileUser extends StatefulWidget {
   @override
@@ -14,6 +15,23 @@ class ProfileUser extends StatefulWidget {
 
 class _ProfileUserState extends State<ProfileUser> {
   Map<String, dynamic>? userData;
+
+  Future<void> _logout(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    // Reset auto login
+    await prefs.setBool('autoLogin', false);
+
+    // Sign out dari Firebase
+    await FirebaseAuth.instance.signOut();
+
+    // Navigasi kembali ke halaman Login
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const Login()),
+      (route) => false,
+    );
+  }
 
   @override
   void initState() {

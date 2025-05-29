@@ -3,6 +3,24 @@ import 'package:strong_u/PaymentPage.dart';
 import 'package:strong_u/chatPT.dart';
 
 class PTProfile extends StatefulWidget {
+  final String name;
+  final String price;
+  final double rating;
+  final String image;
+  final String location;
+  final int exp;
+  final String description;
+
+  PTProfile({
+    required this.name,
+    required this.price,
+    required this.rating,
+    required this.image,
+    required this.location,
+    required this.exp,
+    required this.description,
+  });
+
   @override
   _PTProfileState createState() => _PTProfileState();
 }
@@ -91,7 +109,7 @@ class _PTProfileState extends State<PTProfile> {
                             child: Padding(
                               padding: EdgeInsets.only(top: 5),
                               child: Image.asset(
-                                "picture/PThalfed.png",
+                                widget.image,
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -116,7 +134,7 @@ class _PTProfileState extends State<PTProfile> {
                             child: Padding(
                               padding: EdgeInsets.only(left: 10),
                               child: Text(
-                                "BOBBY",
+                                widget.name.toUpperCase(),
                                 style: TextStyle(
                                   fontSize: 34,
                                   fontFamily: "Futura",
@@ -146,13 +164,15 @@ class _PTProfileState extends State<PTProfile> {
                               Icon(Icons.location_on,
                                   color: Colors.white, size: 18),
                               SizedBox(width: 5),
-                              Text(
-                                "Surabaya",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: "Futura",
+                              Flexible(
+                                child: Text(
+                                  widget.location,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "Futura",
+                                  ),
                                 ),
                               ),
                             ],
@@ -174,7 +194,7 @@ class _PTProfileState extends State<PTProfile> {
                                   color: Colors.white, size: 18),
                               SizedBox(width: 5),
                               Text(
-                                "3 years",
+                                "${widget.exp} years",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 14,
@@ -200,7 +220,7 @@ class _PTProfileState extends State<PTProfile> {
                               Icon(Icons.star, color: Colors.white, size: 18),
                               SizedBox(width: 5),
                               Text(
-                                "4.8/5",
+                                "${widget.rating.toStringAsFixed(1)}/5",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 14,
@@ -227,10 +247,10 @@ class _PTProfileState extends State<PTProfile> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                        "Saya adalah seorang personal trainer profesional dengan spesialisasi dalam weight gain dan body building. Program saya dirancang secara personal untuk memastikan progres yang optimal, mencakup pola latihan yang efektif, nutrisi yang tepat, serta strategi pemulihan yang maksimal.",
+                        widget.description,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Color.fromARGB(255, 255, 255, 255),
+                          color: Colors.white,
                           fontSize: 10,
                           fontWeight: FontWeight.w600,
                         ),
@@ -486,7 +506,7 @@ class _PTProfileState extends State<PTProfile> {
                   ),
                 ),
                 Text(
-                  "Rp ${pricePerSession.toString().replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')} /Session",
+                  "Rp ${pricePerSession.toString().replaceAllMapped(RegExp(r'(\\d)(?=(\\d{3})+(?!\\d))'), (Match m) => '${m[1]}.')} /Session",
                   style: TextStyle(
                     fontSize: 14,
                     color: isSelected ? Colors.white : Color(0xFF0392FB),
@@ -504,7 +524,7 @@ class _PTProfileState extends State<PTProfile> {
                       color: isSelected ? Colors.white : Color(0xFF0392FB)),
                 ),
                 Text(
-                  "Rp ${subTotal.toString().replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')}",
+                  "Rp ${subTotal.toString().replaceAllMapped(RegExp(r'(\\d)(?=(\\d{3})+(?!\\d))'), (Match m) => '${m[1]}.')}",
                   style: TextStyle(
                     fontSize: 16,
                     fontFamily: "futura",
