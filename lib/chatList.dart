@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:strong_u/chatPT.dart';
+import 'package:strong_u/chat_service.dart'; // Import the service
 
 class Chatlist extends StatelessWidget {
+  final ChatService _chatService = ChatService();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,6 +30,17 @@ class Chatlist extends StatelessWidget {
                 ),
               ),
             ),
+            SizedBox(height: 20),
+            Text(
+              "Chat List",
+              style: TextStyle(
+                fontSize: 24,
+                fontFamily: "Futura",
+                color: Colors.black87,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 20),
             Expanded(
               child: Container(
                 margin: EdgeInsets.symmetric(horizontal: 20),
@@ -43,12 +57,40 @@ class Chatlist extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: Column(
-                  children: [
-                    ChatBubble(),
-                    ChatBubble(),
-                    ChatBubble(),
-                  ],
+                child: AnimatedBuilder(
+                  animation: _chatService,
+                  builder: (context, child) {
+                    final chats = _chatService.chats;
+                    if (chats.isEmpty) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.chat_bubble_outline,
+                              size: 64,
+                              color: Colors.grey,
+                            ),
+                            SizedBox(height: 16),
+                            Text(
+                              "No chats yet",
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+
+                    return ListView.builder(
+                      itemCount: chats.length,
+                      itemBuilder: (context, index) {
+                        return ChatBubble(chatData: chats[index]);
+                      },
+                    );
+                  },
                 ),
               ),
             ),
@@ -60,13 +102,38 @@ class Chatlist extends StatelessWidget {
 }
 
 class ChatBubble extends StatelessWidget {
+  final ChatData chatData;
+
+  const ChatBubble({Key? key, required this.chatData}) : super(key: key);
+
+  String _formatTime(DateTime time) {
+    final now = DateTime.now();
+    final difference = now.difference(time);
+
+    if (difference.inMinutes < 1) {
+      return "Just now";
+    } else if (difference.inMinutes < 60) {
+      return "${difference.inMinutes}m ago";
+    } else if (difference.inHours < 24) {
+      return "${difference.inHours}h ago";
+    } else {
+      return "${difference.inDays}d ago";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ChatPT()),
+          MaterialPageRoute(
+            builder: (context) => ChatPT(
+              ptId: chatData.ptId,
+              ptName: chatData.ptName,
+              ptImage: chatData.ptImage,
+            ),
+          ),
         );
       },
       child: Container(
@@ -81,23 +148,43 @@ class ChatBubble extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 20,
-              backgroundImage: AssetImage("picture/PT.png"),
+              backgroundImage: AssetImage(chatData.ptImage),
             ),
-            SizedBox(width: 10),
+            SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "BOBBY",
-                    style: TextStyle(
-                      fontFamily: "futura",
-                      color: Colors.white,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        chatData.ptName,
+                        style: TextStyle(
+                          fontFamily: "Futura",
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        _formatTime(chatData.lastMessageTime),
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
                   ),
+                  SizedBox(height: 4),
                   Text(
-                    "Halo rek, jangan lupa latihan hari ini!",
-                    style: TextStyle(color: Colors.white),
+                    chatData.lastMessage,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),

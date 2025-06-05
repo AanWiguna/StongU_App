@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:strong_u/PaymentPage.dart';
 import 'package:strong_u/chatPT.dart';
+import 'package:strong_u/chat_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PTProfile extends StatefulWidget {
+  final String docId;
   final String name;
   final String price;
   final double rating;
@@ -12,6 +15,7 @@ class PTProfile extends StatefulWidget {
   final String description;
 
   PTProfile({
+    required this.docId,
     required this.name,
     required this.price,
     required this.rating,
@@ -29,6 +33,71 @@ class _PTProfileState extends State<PTProfile> {
   int? selectedPlan;
   bool isSpecializationSelected = false;
   bool isReviewSelected = false;
+  List<int> packages = [];
+  List<int> prices = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchPackages();
+  }
+
+  Future<void> fetchPackages() async {
+    try {
+      // Fetch the document for the current PT using their name or ID
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('PT')
+          .doc(widget.docId)
+          .get();
+
+      // Initialize lists to hold packages and prices
+      List<int> allPackages = [];
+      List<int> allPrices = [];
+
+      // Check if the document exists
+      if (snapshot.exists && snapshot.data() != null) {
+        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+
+        // Check if Paket and HargaPaket are present and not null
+        if (data['Paket'] is List) {
+          allPackages.addAll(List<int>.from(data['Paket']));
+        }
+        if (data['HargaPaket'] is List) {
+          allPrices.addAll(List<int>.from(data['HargaPaket']));
+        }
+
+        // Update the state with the collected packages and prices
+        setState(() {
+          packages = allPackages;
+          prices = allPrices;
+          isLoading = false;
+        });
+      } else {
+        // Fallback data if no document found
+        setState(() {
+          packages = [4, 8, 12, 16];
+          prices = [250000, 220000, 200000, 180000];
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      print('Error fetching packages: $e');
+      // Fallback data if an error occurs
+      setState(() {
+        packages = [4, 8, 12, 16];
+        prices = [250000, 220000, 200000, 180000];
+        isLoading = false;
+      });
+    }
+  }
+
+  int getTotalPrice(int index) {
+    if (index < packages.length && index < prices.length) {
+      return packages[index] * prices[index];
+    }
+    return 0;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,9 +120,19 @@ class _PTProfileState extends State<PTProfile> {
                   icon: Icon(Icons.chat, color: Color(0xFF0392FB)),
                   iconSize: 22,
                   onPressed: () {
+                    // Replace the existing onPressed with this:
+                    final chatService = ChatService();
+                    chatService.createNewChat(
+                        widget.docId, widget.name, widget.image);
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ChatPT()),
+                      MaterialPageRoute(
+                        builder: (context) => ChatPT(
+                          ptId: widget.docId,
+                          ptName: widget.name,
+                          ptImage: widget.image,
+                        ),
+                      ),
                     );
                   },
                 ),
@@ -106,11 +185,21 @@ class _PTProfileState extends State<PTProfile> {
                       child: Stack(
                         children: [
                           Positioned.fill(
-                            child: Padding(
-                              padding: EdgeInsets.only(top: 5),
-                              child: Image.asset(
-                                widget.image,
-                                fit: BoxFit.cover,
+                            child: ClipRect(
+                              child: Align(
+                                alignment: Alignment.topCenter,
+                                heightFactor: 0.5,
+                                child: Padding(
+                                  padding: EdgeInsets.only(top: 5),
+                                  child: Transform.scale(
+                                    scale: 1.7,
+                                    alignment: Alignment.topCenter,
+                                    child: Image.asset(
+                                      widget.image,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -146,6 +235,7 @@ class _PTProfileState extends State<PTProfile> {
                         ],
                       ),
                     ),
+
                     SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -407,27 +497,23 @@ class _PTProfileState extends State<PTProfile> {
                                   )
                                 : isReviewSelected
                                     ? reviewsList()
-                                    : ListView.builder(
-                                        itemCount: 4,
-                                        itemBuilder: (context, index) {
-                                          switch (index) {
-                                            case 0:
+                                    : isLoading
+                                        ? Center(
+                                            child: CircularProgressIndicator(
+                                              color: Color(0xFF0392FB),
+                                            ),
+                                          )
+                                        : ListView.builder(
+                                            itemCount: packages.length,
+                                            itemBuilder: (context, index) {
                                               return sessionPlanCard(
-                                                  4, 250000, 1000000, 1);
-                                            case 1:
-                                              return sessionPlanCard(
-                                                  8, 220000, 1760000, 2);
-                                            case 2:
-                                              return sessionPlanCard(
-                                                  12, 200000, 2400000, 3);
-                                            case 3:
-                                              return sessionPlanCard(
-                                                  16, 180000, 2880000, 4);
-                                            default:
-                                              return SizedBox.shrink();
-                                          }
-                                        },
-                                      ),
+                                                packages[index],
+                                                prices[index],
+                                                getTotalPrice(index),
+                                                index + 1,
+                                              );
+                                            },
+                                          ),
                           )
                         ],
                       ),
@@ -446,13 +532,31 @@ class _PTProfileState extends State<PTProfile> {
                             padding: EdgeInsets.symmetric(
                                 vertical: 8, horizontal: 20),
                           ),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => PaymentPage()),
-                            );
-                          },
+                          onPressed: selectedPlan != null && !isLoading
+                              ? () {
+                                  int selectedIndex = selectedPlan! - 1;
+                                  if (selectedIndex < packages.length &&
+                                      selectedIndex < prices.length) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => PaymentPage(
+                                          ptName: widget.name,
+                                          ptImage: widget.image,
+                                          selectedPlan: selectedPlan!,
+                                          planPrice:
+                                              getTotalPrice(selectedIndex),
+                                          ptId: widget.docId,
+                                          sessions: packages[
+                                              selectedIndex], // Tambahkan ini
+                                          pricePerSession: prices[
+                                              selectedIndex], // Tambahkan ini
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                }
+                              : null,
                           child: Text(
                             "Next",
                             style: TextStyle(
@@ -506,7 +610,7 @@ class _PTProfileState extends State<PTProfile> {
                   ),
                 ),
                 Text(
-                  "Rp ${pricePerSession.toString().replaceAllMapped(RegExp(r'(\\d)(?=(\\d{3})+(?!\\d))'), (Match m) => '${m[1]}.')} /Session",
+                  "Rp ${pricePerSession.toString().replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')} /Session",
                   style: TextStyle(
                     fontSize: 14,
                     color: isSelected ? Colors.white : Color(0xFF0392FB),
@@ -524,7 +628,7 @@ class _PTProfileState extends State<PTProfile> {
                       color: isSelected ? Colors.white : Color(0xFF0392FB)),
                 ),
                 Text(
-                  "Rp ${subTotal.toString().replaceAllMapped(RegExp(r'(\\d)(?=(\\d{3})+(?!\\d))'), (Match m) => '${m[1]}.')}",
+                  "Rp ${subTotal.toString().replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')}",
                   style: TextStyle(
                     fontSize: 16,
                     fontFamily: "futura",
@@ -538,36 +642,36 @@ class _PTProfileState extends State<PTProfile> {
       ),
     );
   }
+}
 
-  Widget specializationCard(String title, String description) {
-    return Container(
-      padding: EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: Colors.blue,
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 15,
-              fontFamily: "futura",
-              color: Colors.white,
-            ),
+Widget specializationCard(String title, String description) {
+  return Container(
+    padding: EdgeInsets.all(15),
+    decoration: BoxDecoration(
+      color: Colors.blue,
+      borderRadius: BorderRadius.circular(15),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 15,
+            fontFamily: "futura",
+            color: Colors.white,
           ),
-          Text(
-            description,
-            style: TextStyle(
-              fontSize: 10,
-              color: Colors.white,
-            ),
+        ),
+        Text(
+          description,
+          style: TextStyle(
+            fontSize: 10,
+            color: Colors.white,
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
 }
 
 final List<Map<String, dynamic>> reviews = [
